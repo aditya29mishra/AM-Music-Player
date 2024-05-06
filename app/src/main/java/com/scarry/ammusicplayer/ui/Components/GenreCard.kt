@@ -22,8 +22,9 @@ import com.google.accompanist.placeholder.material.shimmer
 import com.scarry.ammusicplayer.Domain.Genre
 import org.jetbrains.annotations.Async
 
-@OptIn(ExperimentalMaterialApi::class)
 
+
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun GenreCard(
     genre: Genre,
