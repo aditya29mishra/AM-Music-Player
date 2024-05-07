@@ -41,7 +41,8 @@ import com.scarry.ammusicplayer.ui.Components.GenreCard
 @Composable
 fun SearchScreen(
     genreList: List<Genre>,
-    onGenreItemClick: (Genre) -> Unit
+    onGenreItemClick: (Genre) -> Unit,
+    onSeachTextChange: (String) -> Unit
 ) {
     var searchText by remember { mutableStateOf("") }
     val isLoadingMap = remember { mutableStateMapOf<String, Boolean>() }
@@ -77,7 +78,7 @@ fun SearchScreen(
             value = searchText,
             onValueChange = {
                 searchText = it
-
+                onSeachTextChange(it)
             },
             textStyle = LocalTextStyle.current.copy(fontWeight = FontWeight.SemiBold ),
             colors = TextFieldDefaults.textFieldColors(
@@ -110,15 +111,4 @@ fun SearchScreen(
             }
         }
     }
-}
-
-@OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
-@Preview
-@Composable
-fun SearchScreenPreview() {
-    SearchScreen(
-        genreList = emptyList(),
-        onGenreItemClick = {}
-    )
-
 }

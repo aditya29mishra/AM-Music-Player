@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Card
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
@@ -17,12 +18,16 @@ import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
@@ -30,6 +35,7 @@ import com.google.accompanist.placeholder.PlaceholderHighlight
 import com.google.accompanist.placeholder.material.placeholder
 import com.google.accompanist.placeholder.material.shimmer
 import com.scarry.ammusicplayer.R
+import com.scarry.ammusicplayer.utils.conditional
 
 enum class ListItemCardType { ALBUM, ARTIST, SONG, PLAYLIST }
 
@@ -44,6 +50,7 @@ fun AM_MusicPlayerCompactListItemCard(
     onTrailingButtonClick: () -> Unit,
     titleTextStyle: TextStyle = LocalTextStyle.current,
     subtitleTextStyle: TextStyle = LocalTextStyle.current,
+    thumbnailShape: Shape? = null,
     isLoadingPlaceholderVisible: Boolean = false,
     onThumbnailLoading: (()-> Unit)? = null,
     onThumbnailLoadSuccess: (() -> Unit)? = null,
@@ -67,6 +74,7 @@ fun AM_MusicPlayerCompactListItemCard(
                 contentDescription = null,
                 modifier = Modifier
                     .size(75.dp)
+                    .conditional(thumbnailShape != null){clip(shape = thumbnailShape!!)}
                     .placeholder(
                         visible = isLoadingPlaceholderVisible,
                         highlight = placeholderHighlight
@@ -111,7 +119,6 @@ fun AM_MusicPlayerCompactListItemCard(
         }
     }
 }
-
 @Composable
 fun AM_MusicPlayerCompactListItemCard(
     cardType: ListItemCardType,
@@ -141,6 +148,7 @@ fun AM_MusicPlayerCompactListItemCard(
         onTrailingButtonClick = onTrailingButtonIconClick,
         titleTextStyle = titleTextStyle,
         subtitleTextStyle = subtitleTextStyle,
+        thumbnailShape = if (cardType == ListItemCardType.ARTIST) CircleShape else null,
         isLoadingPlaceholderVisible = isLoadingPlaceHolderVisible,
         onThumbnailLoading = onThumbnailLoading,
         onThumbnailLoadFailure = onThumbnailLoadFailure,
