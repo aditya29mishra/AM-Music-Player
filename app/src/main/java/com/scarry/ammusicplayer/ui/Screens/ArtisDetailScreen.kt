@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
@@ -55,10 +56,23 @@ fun ArtisDetailScreen(
     ){
         artistCoverArtHeaderItem(
             artistName = artistSummary.name,
-            artistCoverArtUrlString = artistSummary.profilePictureUrl.toString(),
+            artistCoverArtUrlString = artistSummary.associatedImageUrl.toString(),
             onBackButtonClicked = onBackButtonClicked,
             onPlayButtonClicked = onPlayButtonClicked
         )
+        items(popularTrack) {
+            AM_MusicPlayerCompactListItemCard(
+                modifier = Modifier
+                    .height(64.dp)
+                    .padding(horizontal = 16.dp),
+                cardType = ListItemCardType.SONG,
+                thumbnailImageUrlString = it.associatedImageUrl.toString(),
+                title = it.name,
+                subtitle = "${it.numberOfPlays} plays",
+                onClick = { onTrackClicked(it) },
+                onTrailingButtonIconClick = { onTrackTrailingButtonIconClicked(it) }
+            )
+        }
         item{
             SubtitleText(
                 modifier = Modifier.padding(start = 16.dp),
@@ -71,9 +85,9 @@ fun ArtisDetailScreen(
                     .height(80.dp)
                     .padding(horizontal = 16.dp),
                 cardType = ListItemCardType.ALBUM,
-                thumbnailImageUrlString = it.albumArtUrl.toString(),
-                title = it.nameOfArtist,
-                subtitle = "Year of release", // TODO
+                thumbnailImageUrlString = it.associatedImageUrl.toString(),
+                title = it.name,
+                subtitle =  "Year of release", // TODO,
                 onClick = { onAlbumClicked(it) },
                 onTrailingButtonIconClick = { onAlbumClicked(it) }
             )

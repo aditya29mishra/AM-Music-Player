@@ -5,10 +5,11 @@ import java.net.URL
 sealed class MusicSummary (
     val id: String,
     val name: String,
-    val associationImageURL: URL,
+    val associatedImageUrl: URL,
     val associationMetadata: String? = null,
     ){
-       class TracKSummary(
+
+    class TracKSummary(
            id: String,
            name: String,
            associatedImageUrl: URL,
@@ -22,7 +23,8 @@ sealed class MusicSummary (
            name: String,
            val nameOfArtist: String,
            val albumArtURL: URL,
-      ): MusicSummary(id, name, albumArtURL, nameOfArtist)
+           val numberOfPlays: Long,
+           ): MusicSummary(id, name, albumArtURL, nameOfArtist)
 
        class ArtistSummary(
             id: String,

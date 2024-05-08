@@ -145,7 +145,7 @@ fun SearchScreen(
     }
 }
 
-@ExperimentalMaterialApi
+
 @Composable
 private fun SearchQueryList(
     searchQueryResult: List<MusicSummary>,
