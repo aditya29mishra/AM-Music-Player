@@ -11,8 +11,9 @@ sealed class MusicSummary (
       data class TracKSummary(
           override val id: String,
           override val name: String,
-           val nameOfArtist: String,
-           val trackArtURL: URL,
+          val nameOfArtist: String,
+          val trackArtURL: URL,
+          val trackURL: URL,
       ): MusicSummary(id, name, trackArtURL, nameOfArtist)
 
       data class AlbumSummary(
@@ -25,8 +26,8 @@ sealed class MusicSummary (
       data class ArtistSummary(
           override val id: String,
           override val name: String,
-          val ArtistProfilePictureURL: URL,
-      ): MusicSummary(id, name,ArtistProfilePictureURL)
+          val profilePictureUrl: URL,
+      ): MusicSummary(id, name,profilePictureUrl)
 
     data class PlaylistSummary(
         override val id: String,

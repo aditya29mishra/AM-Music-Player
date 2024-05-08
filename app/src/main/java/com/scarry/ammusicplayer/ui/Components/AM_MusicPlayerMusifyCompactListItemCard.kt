@@ -3,9 +3,13 @@ package com.scarry.ammusicplayer.ui.Components
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Card
 import androidx.compose.material.ExperimentalMaterialApi
@@ -48,6 +52,8 @@ fun AM_MusicPlayerCompactListItemCard(
     onClick: () -> Unit,
     trailingButton: ImageVector,
     onTrailingButtonClick: () -> Unit,
+    modifier: Modifier = Modifier,
+
     titleTextStyle: TextStyle = LocalTextStyle.current,
     subtitleTextStyle: TextStyle = LocalTextStyle.current,
     thumbnailShape: Shape? = null,
@@ -59,21 +65,22 @@ fun AM_MusicPlayerCompactListItemCard(
 ){
     Card(
         modifier = Modifier
-            .fillMaxWidth()
-            .height(75.dp),
+            .sizeIn(minHeight = 56.dp, minWidth = 250.dp)
+            .then(modifier),
         elevation = 4.dp,
         onClick = onClick
     ) {
         Row (
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ){
             AsyncImage(
                 model = thumbnailImageURLString,
                 contentDescription = null,
                 modifier = Modifier
-                    .size(75.dp)
+                    .fillMaxHeight()
+                    .aspectRatio(1f,true)
+                    .weight(1f)
                     .conditional(thumbnailShape != null){clip(shape = thumbnailShape!!)}
                     .placeholder(
                         visible = isLoadingPlaceholderVisible,
@@ -91,7 +98,9 @@ fun AM_MusicPlayerCompactListItemCard(
                 }
             )
             Column (
-                modifier = Modifier.weight(1f),
+                modifier = Modifier
+                    .padding(horizontal = 16.dp)
+                    .weight(1f),
                 verticalArrangement = Arrangement.spacedBy(4.dp)
             ){
                 Text(
@@ -110,7 +119,10 @@ fun AM_MusicPlayerCompactListItemCard(
                     style = subtitleTextStyle
                 )
             }
-            IconButton(onClick = onTrailingButtonClick) {
+            IconButton(
+                modifier = Modifier.weight(1f),
+                onClick = onTrailingButtonClick
+            ) {
                 Icon(
                     imageVector =trailingButton ,
                     contentDescription = null
@@ -127,6 +139,7 @@ fun AM_MusicPlayerCompactListItemCard(
     subtitle: String,
     onClick: () -> Unit,
     onTrailingButtonIconClick: () -> Unit,
+    modifier: Modifier = Modifier,
     titleTextStyle: TextStyle = LocalTextStyle.current,
     subtitleTextStyle: TextStyle = LocalTextStyle.current,
     isLoadingPlaceHolderVisible: Boolean = false,
@@ -137,6 +150,7 @@ fun AM_MusicPlayerCompactListItemCard(
 
 ){
     AM_MusicPlayerCompactListItemCard(
+        modifier = Modifier,
         thumbnailImageURLString = thumbnailImageUrlString,
         title = title,
         subtitle = subtitle,
