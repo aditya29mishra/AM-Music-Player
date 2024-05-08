@@ -3,36 +3,37 @@ package com.scarry.ammusicplayer.Domain
 import java.net.URL
 
 sealed class MusicSummary (
-    open val id: String,
-    open val name: String,
+    val id: String,
+    val name: String,
     val associationImageURL: URL,
     val associationMetadata: String? = null,
     ){
-      data class TracKSummary(
-          override val id: String,
-          override val name: String,
-          val nameOfArtist: String,
-          val trackArtURL: URL,
-          val trackURL: URL,
-      ): MusicSummary(id, name, trackArtURL, nameOfArtist)
+       class TracKSummary(
+           id: String,
+           name: String,
+           associatedImageUrl: URL,
+           val nameOfArtist: String,
+           val trackURL: URL,
+           val numberOfPlays: Long,
+           ): MusicSummary(id, name, associatedImageUrl, nameOfArtist)
 
-      data class AlbumSummary(
-          override val id: String,
-          override val name: String,
-          val nameOfArtist: String,
-          val albumArtURL: URL,
+       class AlbumSummary(
+           id: String,
+           name: String,
+           val nameOfArtist: String,
+           val albumArtURL: URL,
       ): MusicSummary(id, name, albumArtURL, nameOfArtist)
 
-      data class ArtistSummary(
-          override val id: String,
-          override val name: String,
-          val profilePictureUrl: URL,
-      ): MusicSummary(id, name,profilePictureUrl)
+       class ArtistSummary(
+            id: String,
+            name: String,
+           associatedImageUrl: URL,
+      ): MusicSummary(id, name,associatedImageUrl)
 
-    data class PlaylistSummary(
-        override val id: String,
-        override val name: String,
-        val playlistArtURL: URL,
-    ): MusicSummary(id, name, playlistArtURL)
+     class PlaylistSummary(
+        id: String,
+        name: String,
+        associatedImageUrl: URL,
+    ): MusicSummary(id, name, associatedImageUrl)
 
 }
