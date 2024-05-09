@@ -32,9 +32,8 @@ fun GenreCard(
     modifier: Modifier = Modifier,
     isLoadingPlaceholderVisible: Boolean = false,
     onClick: (() -> Unit)? = null,
-    onImageLoading: (() -> Unit)? = null,
-    onImageLoadSuccess: (() -> Unit)? = null,
-    onImageLoadFailed: ((Throwable) -> Unit)? = null,
+    onImageLoading: () -> Unit,
+    onImageLoadingFinished: (Throwable?) -> Unit
 
 ){
     Card(
@@ -44,22 +43,13 @@ fun GenreCard(
         Box(
             modifier = Modifier.fillMaxSize()
         ){
-            AsyncImage(
-                modifier = Modifier.placeholder(
-                  isLoadingPlaceholderVisible,
-                    highlight = PlaceholderHighlight.shimmer(),
-                ),
+            AsyncImageWithPlaceholder(
                 model = genre.coverArtURL.toString(),
+                contentDescription = null,
                 contentScale = ContentScale.Crop,
-                onState = {
-                    when (it){
-                        is AsyncImagePainter.State.Empty -> {}
-                        is AsyncImagePainter.State.Loading -> onImageLoading?.invoke()
-                        is AsyncImagePainter.State.Success -> onImageLoadSuccess?.invoke()
-                        is AsyncImagePainter.State.Error -> onImageLoadFailed?.invoke(it.result.throwable)
-                    }
-                },
-                contentDescription = null
+                isLoadingPlaceholderVisible = isLoadingPlaceholderVisible,
+                onImageLoading = onImageLoading,
+                onImageLoadingFinished = onImageLoadingFinished
             )
             Text(
                 modifier = Modifier
@@ -71,15 +61,4 @@ fun GenreCard(
             )
         }
     }
-}
-@Preview
-@Composable
-fun GenreCardPreview (){
-    GenreCard(
-        genre = Genre(
-            id = "1",
-            name = "Rock",
-            coverArtURL = "https://"
-        )
-    )
 }
