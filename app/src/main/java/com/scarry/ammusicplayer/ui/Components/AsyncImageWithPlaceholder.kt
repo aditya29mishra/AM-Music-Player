@@ -21,7 +21,7 @@ fun AsyncImageWithPlaceholder(
     onImageLoadingFinished: (Throwable?) -> Unit,
     onImageLoading: () -> Unit,
     modifier: Modifier = Modifier,
-    isLoadingPlaceholderVisible: Boolean = true,
+    isLoadingPlaceholderVisible: Boolean,
     placeholderHighlight: PlaceholderHighlight = PlaceholderHighlight.shimmer(),
     transform: (AsyncImagePainter.State) -> AsyncImagePainter.State = AsyncImagePainter.DefaultTransform,
     alignment: Alignment = Alignment.Center,
