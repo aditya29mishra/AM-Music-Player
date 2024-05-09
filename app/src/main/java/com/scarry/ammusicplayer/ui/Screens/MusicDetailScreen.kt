@@ -46,9 +46,9 @@ fun MusicDetailScreen(
     title: String,
     nameOfUpLoader: String,
     metadata: String,
-    trackList: List<MusicSummary.TracKSummary>,
-    onTrackItemClick: (MusicSummary.TracKSummary) -> Unit,
-    onTrackTrailingButtonClick: (MusicSummary.TracKSummary) -> Unit,
+    trackList: List<MusicSummary.TrackSummary>,
+    onTrackItemClick: (MusicSummary.TrackSummary) -> Unit,
+    onTrackTrailingButtonClick: (MusicSummary.TrackSummary) -> Unit,
     onBackButtonClick: () -> Unit,
     ){
     val metadataText = "${

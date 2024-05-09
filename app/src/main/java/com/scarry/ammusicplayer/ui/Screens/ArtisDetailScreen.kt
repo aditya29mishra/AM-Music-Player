@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -36,7 +35,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
 import com.google.accompanist.insets.navigationBarsHeight
 import com.google.accompanist.insets.statusBarsPadding
 import com.scarry.ammusicplayer.Domain.MusicSummary
@@ -47,12 +45,12 @@ import com.scarry.ammusicplayer.ui.Components.ListItemCardType
 @Composable
 fun ArtisDetailScreen(
     artistSummary: MusicSummary.ArtistSummary,
-    popularTrack: List<MusicSummary.TracKSummary>,
+    popularTrack: List<MusicSummary.TrackSummary>,
     popularReleases: List<MusicSummary.AlbumSummary>,
     onBackButtonClicked: () -> Unit,
     onPlayButtonClicked: () -> Unit,
-    onTrackClicked: (MusicSummary.TracKSummary) -> Unit,
-    onTrackTrailingButtonIconClicked : (MusicSummary.TracKSummary) -> Unit,
+    onTrackClicked: (MusicSummary.TrackSummary) -> Unit,
+    onTrackTrailingButtonIconClicked : (MusicSummary.TrackSummary) -> Unit,
     onAlbumClicked: (MusicSummary.AlbumSummary) -> Unit
 ) {
     val subtitleTextColorWithAlpha = MaterialTheme.colors.onBackground.copy(

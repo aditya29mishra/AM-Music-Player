@@ -51,7 +51,10 @@ fun SearchScreen(
     genreList: List<Genre>,
     onGenreItemClick: (Genre) -> Unit,
     onSearchTextChanged: (String) -> Unit,
-    searchQueryResult: List<MusicSummary>
+    searchQueryResult: List<MusicSummary>,
+    onSearchQueryItemClicked: (MusicSummary) -> Unit,
+    onSearchQueryItemTrailingIconButtonClicked: (MusicSummary) -> Unit
+
 ) {
     var searchText by remember { mutableStateOf("") }
     val isLoadingMap = remember { mutableStateMapOf<String, Boolean>() }
@@ -125,8 +128,7 @@ fun SearchScreen(
                         isLoadingPlaceholderVisible = isLoadingMap.getOrPut(it.id) { true },
                         onClick = { onGenreItemClick(it) },
                         onImageLoading = { isLoadingMap[it.id] = true },
-                        onImageLoadFailed = { _ -> isLoadingMap[it.id] = false },
-                        onImageLoadSuccess = { isLoadingMap[it.id] = false }
+                        onImageLoadingFinished = { _ -> isLoadingMap[it.id] = false }
                     )
                 }
             }
@@ -137,15 +139,15 @@ fun SearchScreen(
             ) {
                 SearchQueryList(
                     searchQueryResult = searchQueryResult,
-                    onItemClick = {},
-                    onTrailingIconButtonClick = {}
+                    onItemClick = {onSearchQueryItemClicked(it)},
+                    onTrailingIconButtonClick = {onSearchQueryItemTrailingIconButtonClicked(it)}
                 )
             }
         }
     }
 }
 
-
+@ExperimentalMaterialApi
 @Composable
 private fun SearchQueryList(
     searchQueryResult: List<MusicSummary>,
@@ -175,5 +177,5 @@ private fun MusicSummary.getAssociatedListCardType(): ListItemCardType = when (t
     is MusicSummary.AlbumSummary -> ListItemCardType.ALBUM
     is MusicSummary.ArtistSummary -> ListItemCardType.ARTIST
     is MusicSummary.PlaylistSummary -> ListItemCardType.PLAYLIST
-    is MusicSummary.TracKSummary -> ListItemCardType.SONG
+    is MusicSummary.TrackSummary -> ListItemCardType.SONG
 }

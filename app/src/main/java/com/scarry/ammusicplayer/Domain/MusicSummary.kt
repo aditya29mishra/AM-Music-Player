@@ -9,7 +9,7 @@ sealed class MusicSummary (
     val associationMetadata: String? = null,
     ){
 
-    class TracKSummary(
+    class TrackSummary(
            id: String,
            name: String,
            associatedImageUrl: URL,
