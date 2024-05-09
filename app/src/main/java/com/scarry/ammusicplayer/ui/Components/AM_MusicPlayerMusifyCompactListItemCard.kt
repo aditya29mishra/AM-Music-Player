@@ -53,9 +53,9 @@ fun AM_MusicPlayerCompactListItemCard(
     trailingButton: ImageVector,
     onTrailingButtonClick: () -> Unit,
     modifier: Modifier = Modifier,
-
     titleTextStyle: TextStyle = LocalTextStyle.current,
     subtitleTextStyle: TextStyle = LocalTextStyle.current,
+    thumbnailImageUrlString : String? = null,
     thumbnailShape: Shape? = null,
     isLoadingPlaceholderVisible: Boolean = false,
     onThumbnailLoading: (()-> Unit)? = null,
@@ -64,7 +64,7 @@ fun AM_MusicPlayerCompactListItemCard(
 ){
     Card(
         modifier = Modifier
-            .sizeIn(minHeight = 56.dp, minWidth = 250.dp , maxHeight = 80.dp)
+            .sizeIn(minHeight = 56.dp, minWidth = 250.dp, maxHeight = 80.dp)
             .then(modifier),
         elevation = 4.dp,
         onClick = onClick
@@ -73,19 +73,21 @@ fun AM_MusicPlayerCompactListItemCard(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
         ){
-            AsyncImageWithPlaceholder(
-                model = thumbnailImageURLString,
-                contentDescription = null,
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .aspectRatio(1f,true)
-                    .conditional(thumbnailShape != null){clip(shape = thumbnailShape!!)},
-                isLoadingPlaceholderVisible = isLoadingPlaceholderVisible,
-                onImageLoading = { onThumbnailLoading?.invoke()},
-                onImageLoadingFinished = { onThumbnailImageLoadingFinished?.invoke(it) },
-                placeholderHighlight = placeholderHighlight,
-                contentScale = ContentScale.Crop,
-            )
+            thumbnailImageUrlString?.let {
+                AsyncImageWithPlaceholder(
+                    model = thumbnailImageURLString,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .aspectRatio(1f, true)
+                        .conditional(thumbnailShape != null) { clip(shape = thumbnailShape!!) },
+                    isLoadingPlaceholderVisible = isLoadingPlaceholderVisible,
+                    onImageLoading = { onThumbnailLoading?.invoke() },
+                    onImageLoadingFinished = { onThumbnailImageLoadingFinished?.invoke(it) },
+                    placeholderHighlight = placeholderHighlight,
+                    contentScale = ContentScale.Crop,
+                )
+            }
             Column (
                 modifier = Modifier
                     .padding(horizontal = 16.dp)
