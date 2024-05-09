@@ -46,22 +46,22 @@ enum class ListItemCardType { ALBUM, ARTIST, SONG, PLAYLIST }
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun AM_MusicPlayerCompactListItemCard(
-    thumbnailImageURLString: String,
     title: String,
     subtitle: String,
     onClick: () -> Unit,
-    trailingButton: ImageVector,
-    onTrailingButtonClick: () -> Unit,
+    trailingButtonIcon: ImageVector,
+    onTrailingButtonIconClick: () -> Unit,
     modifier: Modifier = Modifier,
+    thumbnailImageUrlString: String? = null,
+    thumbnailShape: Shape? = null,
     titleTextStyle: TextStyle = LocalTextStyle.current,
     subtitleTextStyle: TextStyle = LocalTextStyle.current,
-    thumbnailImageUrlString : String? = null,
-    thumbnailShape: Shape? = null,
-    isLoadingPlaceholderVisible: Boolean = false,
-    onThumbnailLoading: (()-> Unit)? = null,
+    isLoadingPlaceHolderVisible: Boolean = false,
+    onThumbnailLoading: (() -> Unit)? = null,
     onThumbnailImageLoadingFinished: ((Throwable?) -> Unit)? = null,
     placeholderHighlight: PlaceholderHighlight = PlaceholderHighlight.shimmer(),
-){
+
+    ){
     Card(
         modifier = Modifier
             .sizeIn(minHeight = 56.dp, minWidth = 250.dp, maxHeight = 80.dp)
@@ -75,13 +75,13 @@ fun AM_MusicPlayerCompactListItemCard(
         ){
             thumbnailImageUrlString?.let {
                 AsyncImageWithPlaceholder(
-                    model = thumbnailImageURLString,
+                    model = it,
                     contentDescription = null,
                     modifier = Modifier
                         .fillMaxHeight()
                         .aspectRatio(1f, true)
                         .conditional(thumbnailShape != null) { clip(shape = thumbnailShape!!) },
-                    isLoadingPlaceholderVisible = isLoadingPlaceholderVisible,
+                    isLoadingPlaceholderVisible = isLoadingPlaceHolderVisible,
                     onImageLoading = { onThumbnailLoading?.invoke() },
                     onImageLoadingFinished = { onThumbnailImageLoadingFinished?.invoke(it) },
                     placeholderHighlight = placeholderHighlight,
@@ -113,10 +113,10 @@ fun AM_MusicPlayerCompactListItemCard(
             }
             IconButton(
                 modifier = Modifier.weight(1f),
-                onClick = onTrailingButtonClick
+                onClick = onTrailingButtonIconClick
             ) {
                 Icon(
-                    imageVector =trailingButton ,
+                    imageVector =trailingButtonIcon ,
                     contentDescription = null
                 )
             }
@@ -141,23 +141,24 @@ fun AM_MusicPlayerCompactListItemCard(
 
 ){
     AM_MusicPlayerCompactListItemCard(
-        modifier = Modifier,
-        thumbnailImageURLString = thumbnailImageUrlString,
+        modifier = modifier,
+        thumbnailImageUrlString = thumbnailImageUrlString,
         title = title,
         subtitle = subtitle,
         onClick = onClick,
-        trailingButton = when (cardType){
+        trailingButtonIcon = when (cardType) {
             ListItemCardType.SONG -> Icons.Filled.MoreVert
             else -> ImageVector.vectorResource(id = R.drawable.baseline_chevron_right_24)
         },
-        onTrailingButtonClick = onTrailingButtonIconClick,
+        onTrailingButtonIconClick = onTrailingButtonIconClick,
+        thumbnailShape = if (cardType == ListItemCardType.ARTIST) CircleShape else null,
         titleTextStyle = titleTextStyle,
         subtitleTextStyle = subtitleTextStyle,
-        thumbnailShape = if (cardType == ListItemCardType.ARTIST) CircleShape else null,
-        isLoadingPlaceholderVisible = isLoadingPlaceHolderVisible,
+        isLoadingPlaceHolderVisible = isLoadingPlaceHolderVisible,
         onThumbnailLoading = onThumbnailLoading,
         onThumbnailImageLoadingFinished = onThumbnailImageLoadingFinished,
         placeholderHighlight = placeholderHighlight
+
     )
 }
 
