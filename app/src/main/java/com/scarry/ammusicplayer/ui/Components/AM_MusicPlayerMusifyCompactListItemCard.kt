@@ -59,8 +59,7 @@ fun AM_MusicPlayerCompactListItemCard(
     thumbnailShape: Shape? = null,
     isLoadingPlaceholderVisible: Boolean = false,
     onThumbnailLoading: (()-> Unit)? = null,
-    onThumbnailLoadSuccess: (() -> Unit)? = null,
-    onThumbnailLoadFailure: (() -> Unit)? = null,
+    onThumbnailImageLoadingFinished: ((Throwable?) -> Unit)? = null,
     placeholderHighlight: PlaceholderHighlight = PlaceholderHighlight.shimmer(),
 ){
     Card(
@@ -74,28 +73,18 @@ fun AM_MusicPlayerCompactListItemCard(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
         ){
-            AsyncImage(
+            AsyncImageWithPlaceholder(
                 model = thumbnailImageURLString,
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxHeight()
                     .aspectRatio(1f,true)
-                    .weight(1f)
-                    .conditional(thumbnailShape != null){clip(shape = thumbnailShape!!)}
-                    .placeholder(
-                        visible = isLoadingPlaceholderVisible,
-                        highlight = placeholderHighlight
-                    ),
+                    .conditional(thumbnailShape != null){clip(shape = thumbnailShape!!)},
+                isLoadingPlaceholderVisible = isLoadingPlaceholderVisible,
+                onImageLoading = { onThumbnailLoading?.invoke()},
+                onImageLoadingFinished = { onThumbnailImageLoadingFinished?.invoke(it) },
+                placeholderHighlight = placeholderHighlight,
                 contentScale = ContentScale.Crop,
-                onState = {
-                    when (it) {
-                        is AsyncImagePainter.State.Empty -> {}
-                        is AsyncImagePainter.State.Loading -> onThumbnailLoading?.invoke()
-                        is AsyncImagePainter.State.Success -> onThumbnailLoadSuccess?.invoke()
-                        is AsyncImagePainter.State.Error -> onThumbnailLoadFailure?.invoke()
-
-                    }
-                }
             )
             Column (
                 modifier = Modifier
@@ -145,8 +134,7 @@ fun AM_MusicPlayerCompactListItemCard(
     subtitleTextStyle: TextStyle = LocalTextStyle.current,
     isLoadingPlaceHolderVisible: Boolean = false,
     onThumbnailLoading: (() -> Unit)? = null,
-    onThumbnailLoadFailure: (() -> Unit)? = null,
-    onThumbnailLoadSuccess: (() -> Unit)? = null,
+    onThumbnailImageLoadingFinished: ((Throwable?) -> Unit)? = null,
     placeholderHighlight: PlaceholderHighlight = PlaceholderHighlight.shimmer()
 
 ){
@@ -166,8 +154,7 @@ fun AM_MusicPlayerCompactListItemCard(
         thumbnailShape = if (cardType == ListItemCardType.ARTIST) CircleShape else null,
         isLoadingPlaceholderVisible = isLoadingPlaceHolderVisible,
         onThumbnailLoading = onThumbnailLoading,
-        onThumbnailLoadFailure = onThumbnailLoadFailure,
-        onThumbnailLoadSuccess = onThumbnailLoadSuccess,
+        onThumbnailImageLoadingFinished = onThumbnailImageLoadingFinished,
         placeholderHighlight = placeholderHighlight
     )
 }
