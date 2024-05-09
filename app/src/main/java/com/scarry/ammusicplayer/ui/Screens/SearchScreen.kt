@@ -160,16 +160,16 @@ private fun SearchQueryList(
             .background(MaterialTheme.colors.background),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        items(searchQueryResult) {
-            AM_MusicPlayerCompactListItemCard(
-                cardType = it.getAssociatedListCardType(),
-                thumbnailImageUrlString = it.associatedImageUrl.toString(),
-                title = it.name,
-                subtitle = it.associatedMetadata ?: "",
-                onClick = { onItemClick(it) },
-                onTrailingButtonIconClick = { onTrailingIconButtonClick(it) }
-            )
-        }
+//        items(searchQueryResult) {
+//            AM_MusicPlayerCompactListItemCard(
+//                cardType = it.getAssociatedListCardType(),
+//                thumbnailImageUrlString = it.associatedImageUrl.toString(),
+//                title = it.name,
+//                subtitle = it.associatedMetadata ?: "",
+//                onClick = { onItemClick(it) },
+//                onTrailingButtonIconClick = { onTrailingIconButtonClick(it) }
+//            )
+//        }
     }
 }
 
