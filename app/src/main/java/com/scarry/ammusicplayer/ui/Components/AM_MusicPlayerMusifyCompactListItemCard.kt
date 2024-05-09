@@ -65,7 +65,7 @@ fun AM_MusicPlayerCompactListItemCard(
 ){
     Card(
         modifier = Modifier
-            .sizeIn(minHeight = 56.dp, minWidth = 250.dp)
+            .sizeIn(minHeight = 56.dp, minWidth = 250.dp , maxHeight = 80.dp)
             .then(modifier),
         elevation = 4.dp,
         onClick = onClick
@@ -100,7 +100,8 @@ fun AM_MusicPlayerCompactListItemCard(
             Column (
                 modifier = Modifier
                     .padding(horizontal = 16.dp)
-                    .weight(1f),
+                    .weight(1f)
+                    .padding(start = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(4.dp)
             ){
                 Text(

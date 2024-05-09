@@ -50,7 +50,7 @@ import com.scarry.ammusicplayer.ui.Components.ListItemCardType
 fun SearchScreen(
     genreList: List<Genre>,
     onGenreItemClick: (Genre) -> Unit,
-    onSearchTextChange: (String) -> Unit,
+    onSearchTextChanged: (String) -> Unit,
     searchQueryResult: List<MusicSummary>
 ) {
     var searchText by remember { mutableStateOf("") }
@@ -97,7 +97,7 @@ fun SearchScreen(
             value = searchText,
             onValueChange = {
                 searchText = it
-                onSearchTextChange(it)
+                onSearchTextChanged(it)
             },
             textStyle = LocalTextStyle.current.copy(fontWeight = FontWeight.SemiBold),
             colors = TextFieldDefaults.textFieldColors(

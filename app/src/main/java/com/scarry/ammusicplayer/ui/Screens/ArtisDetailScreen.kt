@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.ContentAlpha
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -50,6 +51,9 @@ fun ArtisDetailScreen(
     onTrackTrailingButtonIconClicked : (MusicSummary.TracKSummary) -> Unit,
     onAlbumClicked: (MusicSummary.AlbumSummary) -> Unit
 ) {
+    val subtitleTextColorWithAlpha = MaterialTheme.colors.onBackground.copy(
+        alpha = ContentAlpha.disabled
+    )
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -69,6 +73,9 @@ fun ArtisDetailScreen(
                 thumbnailImageUrlString = it.associatedImageUrl.toString(),
                 title = it.name,
                 subtitle = "${it.numberOfPlays} plays",
+                subtitleTextStyle = MaterialTheme.typography.caption.copy(
+                    color = subtitleTextColorWithAlpha
+                ),
                 onClick = { onTrackClicked(it) },
                 onTrailingButtonIconClick = { onTrackTrailingButtonIconClicked(it) }
             )
@@ -87,7 +94,11 @@ fun ArtisDetailScreen(
                 cardType = ListItemCardType.ALBUM,
                 thumbnailImageUrlString = it.associatedImageUrl.toString(),
                 title = it.name,
-                subtitle =  "Year of release", // TODO,
+                titleTextStyle = MaterialTheme.typography.h6,
+                subtitle =  it.yearOfReleaseString,
+                subtitleTextStyle = MaterialTheme.typography.caption.copy(
+                    color = subtitleTextColorWithAlpha
+                ),
                 onClick = { onAlbumClicked(it) },
                 onTrailingButtonIconClick = { onAlbumClicked(it) }
             )
