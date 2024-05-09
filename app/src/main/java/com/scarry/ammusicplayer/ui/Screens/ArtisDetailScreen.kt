@@ -24,6 +24,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,10 +38,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.google.accompanist.insets.navigationBarsHeight
-import com.google.accompanist.insets.navigationBarsWidth
 import com.google.accompanist.insets.statusBarsPadding
 import com.scarry.ammusicplayer.Domain.MusicSummary
 import com.scarry.ammusicplayer.ui.Components.AM_MusicPlayerCompactListItemCard
+import com.scarry.ammusicplayer.ui.Components.AsyncImageWithPlaceholder
 import com.scarry.ammusicplayer.ui.Components.ListItemCardType
 
 @Composable
@@ -54,6 +58,7 @@ fun ArtisDetailScreen(
     val subtitleTextColorWithAlpha = MaterialTheme.colors.onBackground.copy(
         alpha = ContentAlpha.disabled
     )
+    var isCoverArtPlaceholderVisible by remember { mutableStateOf(false) }
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -62,7 +67,11 @@ fun ArtisDetailScreen(
             artistName = artistSummary.name,
             artistCoverArtUrlString = artistSummary.associatedImageUrl.toString(),
             onBackButtonClicked = onBackButtonClicked,
-            onPlayButtonClicked = onPlayButtonClicked
+            onPlayButtonClicked = onPlayButtonClicked,
+            isLoadingPlaceholderVisible = isCoverArtPlaceholderVisible,
+            onCoverArtLoading = { isCoverArtPlaceholderVisible = true },
+            isCoverArtLoaded = { isCoverArtPlaceholderVisible = false }
+
         )
         items(popularTrack) {
             AM_MusicPlayerCompactListItemCard(
@@ -123,7 +132,10 @@ fun LazyListScope.artistCoverArtHeaderItem(
     artistName: String,
     artistCoverArtUrlString: Any,
     onBackButtonClicked: () -> Unit,
-    onPlayButtonClicked: () -> Unit
+    onPlayButtonClicked: () -> Unit,
+    isLoadingPlaceholderVisible: Boolean = false,
+    onCoverArtLoading: (() -> Unit) ? =  null,
+    isCoverArtLoaded: ((Throwable?) -> Unit)? = null
 ) {
    item {
        Box (
@@ -131,11 +143,14 @@ fun LazyListScope.artistCoverArtHeaderItem(
                .fillParentMaxHeight(0.6f)
                .fillParentMaxWidth()
        ){
-           AsyncImage(
+           AsyncImageWithPlaceholder(
                modifier = Modifier.fillMaxSize(),
                model = artistCoverArtUrlString,
                contentDescription = null,
-               contentScale = ContentScale.Crop
+               contentScale = ContentScale.Crop,
+               isLoadingPlaceholderVisible = isLoadingPlaceholderVisible,
+               onImageLoading = { onCoverArtLoading?.invoke() },
+               onImageLoadingFinished = { isCoverArtLoaded?.invoke(it) }
            )
            Box(
                modifier = Modifier
@@ -157,7 +172,9 @@ fun LazyListScope.artistCoverArtHeaderItem(
                    contentDescription = null
                )
                Text(
-                   modifier = Modifier.align(Alignment.BottomStart).padding(16.dp),
+                   modifier = Modifier
+                       .align(Alignment.BottomStart)
+                       .padding(16.dp),
                    text = artistName,
                    style = MaterialTheme.typography.h3,
                    fontWeight = FontWeight.Bold,
@@ -181,27 +198,4 @@ fun LazyListScope.artistCoverArtHeaderItem(
            }
        }
    }
-}
-
-@Composable
-private fun AlbumsList(){
-    LazyColumn(
-        modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        items(10) {
-            AM_MusicPlayerCompactListItemCard(
-                modifier = Modifier
-                    .height(80.dp)
-                    .padding(horizontal = 16.dp),
-                cardType = ListItemCardType.ALBUM,
-                thumbnailImageUrlString = "https://picsum.photos/200/300",
-                title = "Beast (Original Motion Soundtrack)",
-                subtitle = "2022",
-                onClick = { },
-                onTrailingButtonIconClick = { }
-            )
-        }
-    }
-
 }
