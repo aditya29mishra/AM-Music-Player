@@ -13,33 +13,33 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface SpotifyService {
-    @GET(SpotifyEndPoints.SpecificArtistEndPoint)
+    @GET(SpotifyEndPoints.SPECIFIC_ARTIST_ENDPOINT)
 
     suspend fun getArtistInfoWithId(
         @Path("id") artistId: String
     ): Response<ArtistDTO>
 
-    @GET(SpotifyEndPoints.SpecificArtistAlbumsEndPoint)
+    @GET(SpotifyEndPoints.SPECIFIC_ARTIST_ALBUMS_ENDPOINT)
     suspend fun getAlbumsOfArtistWithId(
         @Path("id") artistId: String,
     ): Response<List<AlbumMetadataDTO>>
 
-    @GET(SpotifyEndPoints.SpecificAlbumEndPoint)
+    @GET(SpotifyEndPoints.SPECIFIC_ALBUM_ENDPOINT)
     suspend fun getAlbumInfoWithId(
         @Path("id") albumId: String
     ): Response<AlbumDTO>
 
-    @GET(SpotifyEndPoints.SpecificPlaylistEndPoint)
+    @GET(SpotifyEndPoints.SPECIFIC_PLAYLIST_ENDPOINT)
     suspend fun getPlaylistWithId(
         @Path("playlist_id") playlistId: String
     ): Response<List<PlaylistDTO>>
 
-    @GET(SpotifyEndPoints.TopTracksEndPoint)
+    @GET(SpotifyEndPoints.TOP_TRACKS_ENDPOINT)
     suspend fun getTopTracksOfArtistWithId(
         @Path("id") artistId: String
     ): Response<List<TracksWithAlbumMetadataListDTO>>
 
-    @GET(SpotifyEndPoints.SearchEndPoint)
+    @GET(SpotifyEndPoints.SEARCH_ENDPOINT)
     suspend fun search(
         @Query("q") searchQuery: String
     ): Response<SearchResultsDTO>
