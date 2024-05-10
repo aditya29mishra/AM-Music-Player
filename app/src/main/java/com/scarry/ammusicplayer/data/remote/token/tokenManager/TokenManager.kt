@@ -25,5 +25,5 @@ interface TokenManager{
      suspend fun getAccessToken(
         @Field("grant_type") grantType: String = defaultGrantType,
         @Header("Authorization") secret: String
-    ): Response<AccessTokenResponseDTO>
+    ): AccessTokenResponseDTO
 }
