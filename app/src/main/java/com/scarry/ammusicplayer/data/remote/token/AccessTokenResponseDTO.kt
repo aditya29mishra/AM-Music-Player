@@ -7,3 +7,8 @@ data class AccessTokenResponseDTO(
     @JsonProperty("expires_in") val secondsUntilExpiration: Int,
     @JsonProperty("token_type") val tokenType: String
 )
+
+fun AccessTokenResponseDTO.toBearerToken() = BearerToken(
+    tokenString = accessToken,
+    secondsUntilExpiration = secondsUntilExpiration
+)
