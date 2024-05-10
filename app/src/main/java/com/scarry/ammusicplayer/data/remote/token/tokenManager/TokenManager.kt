@@ -10,11 +10,11 @@ import retrofit2.http.Header
 import retrofit2.http.POST
 import java.util.Base64
 
-//val SPOTIFY_CLIENT_SECRET_BASE64 : String
+val SPOTIFY_CLIENT_SECRET_BASE64 : String = ""
 //    get() = Base64.encodeToString(
 //        "Basic ${BuildConfig.SPOTIFY_CLIENT_ID}:${BuildConfig.SPOTIFY_CLIENT_SECRET}".toByteArray(),
 //        Base64.NO_WRAP
-//    )
+
 
 const val defaultGrantType = "client_credentials"
 
@@ -22,8 +22,8 @@ interface TokenManager{
 
     @FormUrlEncoded
     @POST(SpotifyEndPoints.API_TOKEN_ENDPOINT)
-     suspend fun getAccessToken(
+     suspend fun getNewAccessToken(
+        @Header("Authorization") secret: String,
         @Field("grant_type") grantType: String = defaultGrantType,
-        @Header("Authorization") secret: String
     ): AccessTokenResponseDTO
 }
