@@ -7,6 +7,7 @@ object SpotifyEndPoints {
     const val TopTracksEndPoint = "v1/artists/{id}/top-tracks"
     const val SpecificPlaylistEndPoint = "v1/playlists/{playlist_id}"
     const val SearchEndPoint = "v1/search"
+    const val ApiTokenEndPoint = "api/token"
 
     object Defualt {
         const val defaultPlaylistFields = "id,image,name,description,owner.display_name,track.items,followers.total"
