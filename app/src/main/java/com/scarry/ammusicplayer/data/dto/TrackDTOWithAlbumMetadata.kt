@@ -1,13 +1,14 @@
 package com.scarry.ammusicplayer.data.dto
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import com.google.gson.annotations.SerializedName
 
 data class TrackDTOWithAlbumMetadata(
     val id: String,
     val name: String,
-    @SerializedName("preview_url")val preview_url: String?,
-    @SerializedName("is_playable")val is_playable: Boolean,
+    @JsonProperty("preview_url")val preview_url: String?,
+    @JsonProperty("is_playable")val is_playable: Boolean,
     val explicit: Boolean,
-    @SerializedName("duration_ms")val duration_ms: Int,
-    @SerializedName("album") val album: AlbumMetadataDTO
+    @JsonProperty("duration_ms")val duration_ms: Int,
+    @JsonProperty("album") val album: AlbumMetadataDTO
 )
