@@ -1,5 +1,7 @@
 package com.scarry.ammusicplayer.data.remote.token
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import java.time.LocalDateTime
 
 data class BearerToken (
@@ -10,3 +12,10 @@ data class BearerToken (
     val value get() = "Bearer $tokenString"
     override fun toString(): String = "Bearer $tokenString"
 }
+
+    val BearerToken.isExpired: Boolean
+    @RequiresApi(Build.VERSION_CODES.O)
+    get() {
+        val timeOfExpiration = timeOfCreation.plusSeconds(secondsUntilExpiration.toLong())
+        return LocalDateTime.now() > timeOfExpiration
+    }
