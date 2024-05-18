@@ -16,8 +16,9 @@ import com.scarry.ammusicplayer.data.repository.tokenrepository.TokenRepository
 import com.scarry.ammusicplayer.data.utils.FetchedResource
 import com.scarry.ammusicplayer.data.utils.MapperImageSize
 import retrofit2.HttpException
+import javax.inject.Inject
 
-class AM_MusicRepository (
+class AM_MusicRepository @Inject constructor (
     private val spotifyService: SpotifyService,
     private val tokenRepository: TokenRepository
 ): Repository {

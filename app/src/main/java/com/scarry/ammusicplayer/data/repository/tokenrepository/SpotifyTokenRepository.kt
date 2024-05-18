@@ -10,9 +10,10 @@ import com.scarry.ammusicplayer.data.remote.token.toBearerToken
 import com.scarry.ammusicplayer.data.remote.token.tokenManager.TokenManager
 import java.time.LocalDateTime
 import javax.crypto.SecretKey
+import javax.inject.Inject
 
 
-class SpotifyTokenRepository(
+class SpotifyTokenRepository @Inject constructor(
     private val tokenManager : TokenManager,
     private val base64Encoder: Base64Encoder
 ) : TokenRepository{
