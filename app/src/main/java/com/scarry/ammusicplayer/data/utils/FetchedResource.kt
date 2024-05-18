@@ -13,7 +13,7 @@ sealed class FetchedResource<ResourceType , FailureType> {
     ): FetchedResource<ResourceType , FailureType>()
 
     data class Failure<ResourceType , FailureType> (
-         val error: FailureType,
+         val cause: FailureType,
          val data: ResourceType? = null
     ): FetchedResource<ResourceType , FailureType>()
 
