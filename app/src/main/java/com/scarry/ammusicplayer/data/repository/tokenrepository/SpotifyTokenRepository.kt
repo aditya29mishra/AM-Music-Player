@@ -4,6 +4,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import com.scarry.ammusicplayer.data.encoder.Base64Encoder
 import com.scarry.ammusicplayer.data.remote.token.BearerToken
+import com.scarry.ammusicplayer.data.remote.token.getSpotifyClientSecret
 import com.scarry.ammusicplayer.data.remote.token.isExpired
 import com.scarry.ammusicplayer.data.remote.token.toBearerToken
 import com.scarry.ammusicplayer.data.remote.token.tokenManager.SPOTIFY_CLIENT_SECRET_BASE64
@@ -25,7 +26,8 @@ class SpotifyTokenRepository(
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private suspend fun getAndAssignToken(clientSecret: String = SPOTIFY_CLIENT_SECRET_BASE64 ) {
+    private suspend fun getAndAssignToken( ) {
+        val clientSecret = getSpotifyClientSecret(base64Encoder)
         token = tokenManager
             .getNewAccessToken(clientSecret)
             .toBearerToken()
