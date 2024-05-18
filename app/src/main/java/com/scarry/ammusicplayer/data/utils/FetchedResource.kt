@@ -9,12 +9,12 @@ import kotlin.reflect.jvm.internal.impl.descriptors.Visibilities.Private
  */
 sealed class FetchedResource<ResourceType , FailureType> {
     data class Success<ResourceType , FailureType> (
-        private val data: ResourceType
+         val data: ResourceType
     ): FetchedResource<ResourceType , FailureType>()
 
     data class Failure<ResourceType , FailureType> (
-        private val error: FailureType,
-        private val data: ResourceType? = null
+         val error: FailureType,
+         val data: ResourceType? = null
     ): FetchedResource<ResourceType , FailureType>()
 
 }
