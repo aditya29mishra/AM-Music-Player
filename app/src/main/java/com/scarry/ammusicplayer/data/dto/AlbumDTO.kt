@@ -1,15 +1,19 @@
 package com.scarry.ammusicplayer.data.dto
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.scarry.ammusicplayer.Domain.MusicSummary
+import com.scarry.ammusicplayer.data.utils.MapperImageSize
+import com.scarry.ammusicplayer.data.utils.getImageDTOForImageSize
+import java.net.URL
 
 data class AlbumDTO(
     val id: String,
     val name: String,
-    @JsonProperty("album_type") val albumType: String, // album,single or compilation
+    @JsonProperty("album_type") val albumType: String,
     val artists: List<ArtistDTOWithNullableImagesAndFollowers>,
     val images: List<ImageDTO>,
     @JsonProperty("release_date") val releaseDate: String,
-    @JsonProperty("release_date_precision") val releaseDatePrecision: String, // year, month or day
+    @JsonProperty("release_date_precision") val releaseDatePrecision: String,
     @JsonProperty("total_tracks") val totalTracks: Int,
     val tracks: TracksWithoutAlbumMetadataList
 ){
@@ -30,3 +34,11 @@ data class AlbumDTO(
         val followers: ArtistDTO.Followers?
     )
 }
+
+fun AlbumDTO.toAlbumSummary(imageSize: MapperImageSize) =MusicSummary.AlbumSummary(
+    id = id,
+    name = name,
+    nameOfArtist =artists.first().name,
+    albumArtURL = URL( images.getImageDTOForImageSize(imageSize).url),
+    yearOfReleaseString = releaseDate,
+)

@@ -1,6 +1,9 @@
 package com.scarry.ammusicplayer.data.dto
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.scarry.ammusicplayer.Domain.MusicSummary
+import java.net.URL
+
 data class PlaylistDTO(
     val id: String,
     val name: String,
@@ -14,3 +17,9 @@ data class PlaylistDTO(
     data class Tracks(val items: List<TrackDTOWithAlbumMetadataWrapper>)
     data class TrackDTOWithAlbumMetadataWrapper(@JsonProperty("track") val track: TrackDTOWithAlbumMetadata)
 }
+
+fun PlaylistDTO.toPlaylistSummary() = MusicSummary.PlaylistSummary(
+    id = id,
+    name = name,
+    associatedImageUrl = URL(images.first().url)
+)

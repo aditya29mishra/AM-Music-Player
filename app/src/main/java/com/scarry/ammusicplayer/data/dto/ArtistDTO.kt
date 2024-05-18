@@ -2,6 +2,7 @@ package com.scarry.ammusicplayer.data.dto
 
 import com.scarry.ammusicplayer.Domain.MusicSummary
 import com.scarry.ammusicplayer.data.utils.MapperImageSize
+import com.scarry.ammusicplayer.data.utils.getImageDTOForImageSize
 import java.net.URL
 
 data class ArtistDTO(
@@ -16,12 +17,6 @@ data class ArtistDTO(
 fun ArtistDTO.toArtistSummary(imageSize: MapperImageSize) = MusicSummary.ArtistSummary(
     id = id,
     name = name,
-    associatedImageUrl = URL(
-        when (imageSize) {
-            MapperImageSize.SMALL -> images[2]
-            MapperImageSize.MEDIUM -> images[1]
-            MapperImageSize.LARGE -> images[0]
-        }.url
-    )
+    associatedImageUrl = URL(images.getImageDTOForImageSize(imageSize).url)
 )
 
