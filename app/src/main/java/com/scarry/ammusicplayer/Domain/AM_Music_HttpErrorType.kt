@@ -11,7 +11,7 @@ enum class AM_Music_HttpErrorType {
     UNKNOWN_ERROR
 }
 
-val HttpException.musifyHttpErrorType: AM_Music_HttpErrorType
+val HttpException.AM_MusicHttpErrorType: AM_Music_HttpErrorType
     get() =
         when (this.code()) {
             400 -> AM_Music_HttpErrorType.INVALID_REQUEST

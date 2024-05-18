@@ -12,33 +12,33 @@ interface Repository {
         imageSize: MapperImageSize
     ):FetchedResource<MusicSummary.ArtistSummary , AM_Music_HttpErrorType>
 
-    suspend fun fetchAlbumOfArtistForId(
+    suspend fun fetchAlbumsOfArtistWithId(
         albumId: String,
         imageSize: MapperImageSize,
-        CountryCode:String
+        countryCode:String
     ):FetchedResource<List<MusicSummary.AlbumSummary >, AM_Music_HttpErrorType>
 
 
     suspend fun fetchTopTenTracksForArtistWithId(
-        trackId: String,
+        artistId: String,
         imageSize: MapperImageSize,
-        CountryCode:String
+        countryCode:String
     ):FetchedResource<List<MusicSummary.TrackSummary> , AM_Music_HttpErrorType>
 
     suspend fun fetchAlbumWithId(
         albumId: String,
         imageSize: MapperImageSize,
-        CountryCode:String
+        countryCode:String
     ) : FetchedResource<MusicSummary.AlbumSummary , AM_Music_HttpErrorType>
 
     suspend fun fetchPlaylistWithId(
         playlistId: String,
-        imageSize: MapperImageSize,
+        countryCode: String,
     ):FetchedResource<MusicSummary.PlaylistSummary , AM_Music_HttpErrorType>
 
     suspend fun fetchSearchResultForQuery(
         searchQuery: String,
         imageSize: MapperImageSize,
-        CountryCode:String
+        countryCode:String
     ) :FetchedResource<SearchResult , AM_Music_HttpErrorType>
 }

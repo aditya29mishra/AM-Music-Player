@@ -2,6 +2,7 @@ package com.scarry.ammusicplayer.data.remote.musicservice
 
 import com.scarry.ammusicplayer.data.dto.AlbumDTO
 import com.scarry.ammusicplayer.data.dto.AlbumMetadataDTO
+import com.scarry.ammusicplayer.data.dto.AlbumsMetadataDTO
 import com.scarry.ammusicplayer.data.dto.ArtistDTO
 import com.scarry.ammusicplayer.data.dto.PlaylistDTO
 import com.scarry.ammusicplayer.data.dto.SearchResultsDTO
@@ -15,45 +16,50 @@ import retrofit2.http.Query
 
 interface SpotifyService {
     @GET(SpotifyEndPoints.SPECIFIC_ARTIST_ENDPOINT)
-
     suspend fun getArtistInfoWithId(
         @Path("id") artistId: String,
         @Header("Authorization") token: BearerToken,
-
-        ): Response<ArtistDTO>
+    ): ArtistDTO
 
     @GET(SpotifyEndPoints.SPECIFIC_ARTIST_ALBUMS_ENDPOINT)
     suspend fun getAlbumsOfArtistWithId(
         @Path("id") artistId: String,
+        @Query("market") market: String,
         @Header("Authorization") token: BearerToken,
+        @Query("limit") limit: Int = 20,
+        @Query("offset") offset: Int = 0,
+        @Query("include_groups") includeGroups: String? = null,
+    ): AlbumsMetadataDTO
 
-        ): Response<List<AlbumMetadataDTO>>
+    @GET(SpotifyEndPoints.TOP_TRACKS_ENDPOINT)
+    suspend fun getTopTenTracksForArtistWithId(
+        @Path("id") artistId: String,
+        @Query("market") market: String,
+        @Header("Authorization") token: BearerToken
+    ): TracksWithAlbumMetadataListDTO
 
     @GET(SpotifyEndPoints.SPECIFIC_ALBUM_ENDPOINT)
-    suspend fun getAlbumInfoWithId(
+    suspend fun getAlbumWithId(
         @Path("id") albumId: String,
-        @Header("Authorization") token: BearerToken,
-
-    ): Response<AlbumDTO>
+        @Query("market") market: String,
+        @Header("Authorization") token: BearerToken
+    ): AlbumDTO
 
     @GET(SpotifyEndPoints.SPECIFIC_PLAYLIST_ENDPOINT)
     suspend fun getPlaylistWithId(
         @Path("playlist_id") playlistId: String,
+        @Query("market") market: String,
         @Header("Authorization") token: BearerToken,
-        ): Response<List<PlaylistDTO>>
-
-    @GET(SpotifyEndPoints.TOP_TRACKS_ENDPOINT)
-    suspend fun getTopTracksOfArtistWithId(
-        @Path("id") artistId: String,
-        @Header("Authorization") token: BearerToken,
-        ): Response<List<TracksWithAlbumMetadataListDTO>>
+        @Query("fields") fields: String = SpotifyEndPoints.Defaults.defaultPlaylistFields
+    ): PlaylistDTO
 
     @GET(SpotifyEndPoints.SEARCH_ENDPOINT)
     suspend fun search(
         @Query("q") searchQuery: String,
+        @Query("market") market: String,
         @Header("Authorization") token: BearerToken,
-        ): Response<SearchResultsDTO>
-
-
-
+        @Query("limit") limit: Int = 20,
+        @Query("offset") offset: Int = 0,
+        @Query("type") type: String = SpotifyEndPoints.Defaults.defaultSearchQueryTypes,
+    ): SearchResultsDTO
 }

@@ -10,7 +10,7 @@ object SpotifyEndPoints {
     const val API_TOKEN_ENDPOINT = "api/token"
 
 
-    object Defualt {
+    object Defaults {
         const val defaultPlaylistFields = "id,image,name,description,owner.display_name,track.items,followers.total"
         val defaultSearchQueryTypes = buildSearchQueryWithTypes(*SearchQueryType.values())
 
