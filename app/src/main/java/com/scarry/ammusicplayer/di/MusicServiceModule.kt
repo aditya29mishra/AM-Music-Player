@@ -6,11 +6,12 @@ import com.scarry.ammusicplayer.utils.defaultAM_MusicJacksonConverterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import javax.inject.Singleton
 
 @Module
-@InstallIn (Singleton::class)
+@InstallIn (SingletonComponent::class)
 object MusicServiceModule {
     @Provides
     @Singleton

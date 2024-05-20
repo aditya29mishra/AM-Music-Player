@@ -90,6 +90,9 @@ dependencies {
     implementation 'com.fasterxml.jackson.module:jackson-module-kotlin:2.13.2'
 
     // hilt
-    implementation "com.google.dagger:hilt-android:2.38.1"
-    kapt "com.google.dagger:hilt-compiler:2.38.1"
+    implementation libs.hilt.android
+    kapt libs.hilt.compiler
+    coreLibraryDesugaring libs.desugar.jdk.libs
+
+
 }
