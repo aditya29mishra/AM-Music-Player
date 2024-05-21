@@ -55,11 +55,9 @@ import com.airbnb.lottie.LottieComposition
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
-import com.airbnb.lottie.compose.rememberLottieAnimatable
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.google.accompanist.insets.navigationBarsHeight
 import com.scarry.ammusicplayer.Domain.Genre
-import com.scarry.ammusicplayer.Domain.MusicSummary
 import com.scarry.ammusicplayer.Domain.SearchResult
 import com.scarry.ammusicplayer.Domain.SearchResults
 import com.scarry.ammusicplayer.R
@@ -67,6 +65,13 @@ import com.scarry.ammusicplayer.ui.Components.AM_MusicPlayerCompactListItemCard
 import com.scarry.ammusicplayer.ui.Components.GenreCard
 import com.scarry.ammusicplayer.ui.Components.ListItemCardType
 
+enum class SearchScreenFilters (
+    val filterLabel: String
+){  ALBUMS("Albums"),
+    ARTISTS("Artists"),
+    PLAYLISTS("Playlists"),
+    TRACKS("Tracks")
+}
 @ExperimentalMaterialApi
 @ExperimentalFoundationApi
 @Composable
