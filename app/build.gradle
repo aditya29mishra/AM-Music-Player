@@ -94,5 +94,9 @@ dependencies {
     kapt libs.hilt.compiler
     coreLibraryDesugaring libs.desugar.jdk.libs
 
+    // lottie compose
+    implementation "com.airbnb.android:lottie-compose:5.2.0"
+
+
 
 }
