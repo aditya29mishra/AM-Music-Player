@@ -6,3 +6,9 @@ data class SearchResults(
     val artists: List<SearchResult.ArtistSearchResult>,
     val playlists: List<SearchResult.PlaylistSearchResult>
 )
+fun emptySearchResults() = SearchResults(
+    tracks = emptyList(),
+    albums = emptyList(),
+    artists = emptyList(),
+    playlists = emptyList()
+)
