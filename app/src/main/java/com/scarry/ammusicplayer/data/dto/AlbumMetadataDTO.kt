@@ -36,7 +36,7 @@ fun AlbumMetadataDTO.toAlbumSearchResult(imageSize: MapperImageSize) =
     SearchResult.AlbumSearchResult(
         id = id,
         name = name,
-        artistsString = artists.joinToString(","),
+        artistsString = artists.joinToString(",") { it.name },
         albumArtUrlString = images.getImageDTOForImageSize(imageSize).url,
         yearOfReleaseString = release_date
     )

@@ -8,6 +8,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -39,6 +40,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.google.accompanist.insets.navigationBarsHeight
 import com.scarry.ammusicplayer.Domain.Genre
 import com.scarry.ammusicplayer.Domain.MusicSummary
 import com.scarry.ammusicplayer.Domain.SearchResult
@@ -140,8 +142,8 @@ fun SearchScreen(
             ) {
                 SearchQueryList(
                     searchResults = searchQueryResult,
-                    onItemClick = {onSearchQueryItemClicked(it)},
-                    onTrailingIconButtonClick ={ }
+                    onItemClick = { onSearchQueryItemClicked(it) },
+                    onTrailingIconButtonClick = { }
                 )
             }
         }
@@ -161,7 +163,7 @@ private fun SearchQueryList(
             .background(MaterialTheme.colors.background),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        items(searchResults.tracks){
+        items(searchResults.tracks) {
             AM_MusicPlayerCompactListItemCard(
                 cardType = it.getAssociatedListCardType(),
                 thumbnailImageUrlString = it.imageUrlString,
@@ -177,29 +179,32 @@ private fun SearchQueryList(
                 thumbnailImageUrlString = it.albumArtUrlString,
                 title = it.name,
                 subtitle = it.artistsString,
-                onClick = { onItemClick(it)},
-                onTrailingButtonIconClick = {onTrailingIconButtonClick(it)}
+                onClick = { onItemClick(it) },
+                onTrailingButtonIconClick = { onTrailingIconButtonClick(it) }
             )
         }
-        items(searchResults.artists){
+        items(searchResults.artists) {
             AM_MusicPlayerCompactListItemCard(
                 cardType = it.getAssociatedListCardType(),
                 thumbnailImageUrlString = it.imageUrlString,
                 title = it.name,
                 subtitle = "Artist",
-                onClick = { onItemClick(it)},
-                onTrailingButtonIconClick = {onTrailingIconButtonClick(it)}
+                onClick = { onItemClick(it) },
+                onTrailingButtonIconClick = { onTrailingIconButtonClick(it) }
             )
         }
-        items(searchResults.playlists){
+        items(searchResults.playlists) {
             AM_MusicPlayerCompactListItemCard(
                 cardType = it.getAssociatedListCardType(),
                 thumbnailImageUrlString = it.imageUrlString,
                 title = it.name,
                 subtitle = "Playlist",
-                onClick = { onItemClick(it)},
-                onTrailingButtonIconClick = {onTrailingIconButtonClick(it)}
+                onClick = { onItemClick(it) },
+                onTrailingButtonIconClick = { onTrailingIconButtonClick(it) }
             )
+        }
+        item {
+            Spacer(modifier = Modifier.navigationBarsHeight())
         }
     }
 }

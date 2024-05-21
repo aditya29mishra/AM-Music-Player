@@ -30,6 +30,6 @@ fun TrackDTOWithAlbumMetadata.toTrackSearchResult(imageSize: MapperImageSize)=
         id = id,
         name = name,
         imageUrlString = albumMetadata.images.getImageDTOForImageSize(imageSize).url,
-        artistsString = albumMetadata.artists.joinToString(","),
+        artistsString = albumMetadata.artists.joinToString(",") { it.name },
         trackUrlString = preview_url
     )
