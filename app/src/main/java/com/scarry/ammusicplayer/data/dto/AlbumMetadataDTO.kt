@@ -3,6 +3,7 @@ package com.scarry.ammusicplayer.data.dto
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.google.gson.annotations.SerializedName
 import com.scarry.ammusicplayer.Domain.MusicSummary
+import com.scarry.ammusicplayer.Domain.searchResult.AlbumSearchResult
 import com.scarry.ammusicplayer.data.utils.MapperImageSize
 import com.scarry.ammusicplayer.data.utils.getImageDTOForImageSize
 import java.net.URL
@@ -32,4 +33,10 @@ fun AlbumMetadataDTO.toAlbumSummary(imageSize: MapperImageSize) = MusicSummary.A
     yearOfReleaseString = release_date
 )
 
-
+fun AlbumMetadataDTO.toAlbumSearchResult(imageSize: MapperImageSize) = AlbumSearchResult(
+    id = id,
+    name = name,
+    artistString = artists.joinToString (","),
+    albumArtUrlString = images.getImageDTOForImageSize(imageSize).url,
+    yearOfReleaseString = release_date
+)
