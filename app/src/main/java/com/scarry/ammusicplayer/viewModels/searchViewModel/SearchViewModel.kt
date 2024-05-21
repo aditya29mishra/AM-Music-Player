@@ -1,4 +1,4 @@
-package com.scarry.ammusicplayer.viewModels
+package com.scarry.ammusicplayer.viewModels.searchViewModel
 
 import android.app.Application
 import androidx.compose.runtime.State

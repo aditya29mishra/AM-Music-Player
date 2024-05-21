@@ -13,8 +13,11 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -22,11 +25,14 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.magnifier
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
@@ -52,7 +58,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.airbnb.lottie.LottieComposition
 import com.airbnb.lottie.compose.LottieAnimation
@@ -68,19 +76,16 @@ import com.scarry.ammusicplayer.ui.Components.AM_MusicPlayerCompactListItemCard
 import com.scarry.ammusicplayer.ui.Components.FilterChip
 import com.scarry.ammusicplayer.ui.Components.GenreCard
 import com.scarry.ammusicplayer.ui.Components.ListItemCardType
+import com.scarry.ammusicplayer.viewModels.searchViewModel.SearchFilter
 
-enum class SearchScreenFilters (
-    val filterLabel: String
-){  ALBUMS("Albums"),
-    ARTISTS("Artists"),
-    PLAYLISTS("Playlists"),
-    TRACKS("Tracks")
-}
+
 @ExperimentalMaterialApi
 @ExperimentalFoundationApi
 @Composable
 fun SearchScreen(
     genreList: List<Genre>,
+    searchScreenFilter : List<SearchFilter>,
+    onSearchFilterClicked: (SearchFilter) -> Unit,
     onGenreItemClick: (Genre) -> Unit,
     onSearchTextChanged: (String) -> Unit,
     isSearchResultLoading: Boolean,
@@ -109,9 +114,12 @@ fun SearchScreen(
     }
     val isSearchItemLoadingPlaceHolderVisibleMap =
         remember { mutableStateMapOf<SearchResult, Boolean>() }
-    val isSearchResultLoadingAnimationcomposition by rememberLottieComposition(
+    val isSearchResultLoadingAnimationComposition by rememberLottieComposition(
         spec =  LottieCompositionSpec.RawRes(R.raw.lottie_loading_anim)
     )
+    val isFilterChipGroupVisible by remember { derivedStateOf { isSearchListVisible } }
+    var currentlySelectedSearchScreenFilter by remember { mutableStateOf(SearchFilter.TRACKS) }
+    var horizontalPaddingModifier  = Modifier.padding(horizontal = 16.dp)
     BackHandler(isSearchListVisible) {
         focusManager.clearFocus()
         if(searchText.isEmpty())isSearchListVisible = false
@@ -125,6 +133,7 @@ fun SearchScreen(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Text(
+            modifier = horizontalPaddingModifier,
             text = "Search",
             fontWeight = FontWeight.Bold,
             style = MaterialTheme.typography.h5
@@ -132,6 +141,7 @@ fun SearchScreen(
         OutlinedTextField(
             modifier = Modifier
                 .fillMaxWidth()
+                .then(horizontalPaddingModifier)
                 .onFocusChanged {
                     if (it.isFocused) {
                         isSearchListVisible = true
@@ -165,7 +175,20 @@ fun SearchScreen(
                 textColor = Color.Black
             )
         )
-        Box {
+        AnimatedVisibility(
+            visible = isFilterChipGroupVisible
+        ) {
+            FilterChipGroup(
+                scrollState = rememberScrollState(),
+                filters = SearchFilter.values().toList(),
+                currentlySelectedFilter = currentlySelectedSearchScreenFilter,
+                onFilterClicked = {
+                    currentlySelectedSearchScreenFilter= it
+                    onSearchFilterClicked(it)
+                }
+            )
+        }
+        Box (modifier = horizontalPaddingModifier){
             Text(
                 text = "Genres",
                 fontWeight = FontWeight.Bold,
@@ -204,7 +227,7 @@ fun SearchScreen(
                     },
                     onImageLoading = { isSearchItemLoadingPlaceHolderVisibleMap[it] = true },
                     isSearchResultLoadingAnimationVisible = isSearchResultLoading,
-                    lottieComposition = isSearchResultLoadingAnimationcomposition
+                    lottieComposition = isSearchResultLoadingAnimationComposition
                     )
             }
         }
@@ -317,15 +340,20 @@ private fun SearchQueryList(
 @Composable
 fun FilterChipGroup(
     scrollState: ScrollState,
-    filters: List<SearchScreenFilters>,
-    currentlySelectedFilter: SearchScreenFilters,
-    onFilterClicked: (SearchScreenFilters) -> Unit,
+    filters: List<SearchFilter>,
+    currentlySelectedFilter: SearchFilter,
+    onFilterClicked: (SearchFilter) -> Unit,
     modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(horizontal = 8.dp)
 ){
+    val currentLayoutDirection = LocalLayoutDirection.current
+    val startPadding = contentPadding.calculateStartPadding(currentLayoutDirection)
+    val endPadding = contentPadding.calculateEndPadding(currentLayoutDirection)
     Row(
       modifier = Modifier.horizontalScroll(scrollState),
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ){
+        Spacer(modifier = Modifier.width(startPadding))
         filters.forEach {
             FilterChip(
                 text = it.filterLabel,
@@ -333,6 +361,7 @@ fun FilterChipGroup(
                 onClick = { onFilterClicked(it) }
             )
         }
+        Spacer(modifier = Modifier.width(endPadding))
     }
 }
 
