@@ -17,6 +17,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.LocalTextStyle
@@ -40,6 +41,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.scarry.ammusicplayer.Domain.Genre
 import com.scarry.ammusicplayer.Domain.MusicSummary
+import com.scarry.ammusicplayer.Domain.SearchResult
+import com.scarry.ammusicplayer.Domain.SearchResults
 import com.scarry.ammusicplayer.ui.Components.AM_MusicPlayerCompactListItemCard
 import com.scarry.ammusicplayer.ui.Components.GenreCard
 import com.scarry.ammusicplayer.ui.Components.ListItemCardType
@@ -51,10 +54,8 @@ fun SearchScreen(
     genreList: List<Genre>,
     onGenreItemClick: (Genre) -> Unit,
     onSearchTextChanged: (String) -> Unit,
-    searchQueryResult: List<MusicSummary>,
-    onSearchQueryItemClicked: (MusicSummary) -> Unit,
-    onSearchQueryItemTrailingIconButtonClicked: (MusicSummary) -> Unit
-
+    searchQueryResult: SearchResults,
+    onSearchQueryItemClicked: (SearchResult) -> Unit,
 ) {
     var searchText by remember { mutableStateOf("") }
     val isLoadingMap = remember { mutableStateMapOf<String, Boolean>() }
@@ -138,9 +139,9 @@ fun SearchScreen(
                 exit = fadeOut()
             ) {
                 SearchQueryList(
-                    searchQueryResult = searchQueryResult,
+                    searchResults = searchQueryResult,
                     onItemClick = {onSearchQueryItemClicked(it)},
-                    onTrailingIconButtonClick = {onSearchQueryItemTrailingIconButtonClicked(it)}
+                    onTrailingIconButtonClick ={ }
                 )
             }
         }
@@ -150,9 +151,9 @@ fun SearchScreen(
 @ExperimentalMaterialApi
 @Composable
 private fun SearchQueryList(
-    searchQueryResult: List<MusicSummary>,
-    onItemClick: (MusicSummary) -> Unit,
-    onTrailingIconButtonClick: (MusicSummary) -> Unit
+    searchResults: SearchResults,
+    onItemClick: (SearchResult) -> Unit,
+    onTrailingIconButtonClick: (SearchResult) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier
@@ -160,22 +161,52 @@ private fun SearchQueryList(
             .background(MaterialTheme.colors.background),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-//        items(searchQueryResult) {
-//            AM_MusicPlayerCompactListItemCard(
-//                cardType = it.getAssociatedListCardType(),
-//                thumbnailImageUrlString = it.associatedImageUrl.toString(),
-//                title = it.name,
-//                subtitle = it.associatedMetadata ?: "",
-//                onClick = { onItemClick(it) },
-//                onTrailingButtonIconClick = { onTrailingIconButtonClick(it) }
-//            )
-//        }
+        items(searchResults.tracks){
+            AM_MusicPlayerCompactListItemCard(
+                cardType = it.getAssociatedListCardType(),
+                thumbnailImageUrlString = it.imageUrlString,
+                title = it.name,
+                subtitle = it.artistsString,
+                onClick = { onItemClick(it) },
+                onTrailingButtonIconClick = { onTrailingIconButtonClick(it) }
+            )
+        }
+        items(searchResults.albums) {
+            AM_MusicPlayerCompactListItemCard(
+                cardType = it.getAssociatedListCardType(),
+                thumbnailImageUrlString = it.albumArtUrlString,
+                title = it.name,
+                subtitle = it.artistsString,
+                onClick = { onItemClick(it)},
+                onTrailingButtonIconClick = {onTrailingIconButtonClick(it)}
+            )
+        }
+        items(searchResults.artists){
+            AM_MusicPlayerCompactListItemCard(
+                cardType = it.getAssociatedListCardType(),
+                thumbnailImageUrlString = it.imageUrlString,
+                title = it.name,
+                subtitle = "Artist",
+                onClick = { onItemClick(it)},
+                onTrailingButtonIconClick = {onTrailingIconButtonClick(it)}
+            )
+        }
+        items(searchResults.playlists){
+            AM_MusicPlayerCompactListItemCard(
+                cardType = it.getAssociatedListCardType(),
+                thumbnailImageUrlString = it.imageUrlString,
+                title = it.name,
+                subtitle = "Playlist",
+                onClick = { onItemClick(it)},
+                onTrailingButtonIconClick = {onTrailingIconButtonClick(it)}
+            )
+        }
     }
 }
 
-private fun MusicSummary.getAssociatedListCardType(): ListItemCardType = when (this) {
-    is MusicSummary.AlbumSummary -> ListItemCardType.ALBUM
-    is MusicSummary.ArtistSummary -> ListItemCardType.ARTIST
-    is MusicSummary.PlaylistSummary -> ListItemCardType.PLAYLIST
-    is MusicSummary.TrackSummary -> ListItemCardType.SONG
+private fun SearchResult.getAssociatedListCardType(): ListItemCardType = when (this) {
+    is SearchResult.AlbumSearchResult -> ListItemCardType.ALBUM
+    is SearchResult.ArtistSearchResult -> ListItemCardType.ARTIST
+    is SearchResult.PlaylistSearchResult -> ListItemCardType.PLAYLIST
+    is SearchResult.TrackSearchResult -> ListItemCardType.SONG
 }
