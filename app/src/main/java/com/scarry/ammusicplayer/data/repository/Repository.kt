@@ -2,7 +2,7 @@ package com.scarry.ammusicplayer.data.repository
 
 import com.scarry.ammusicplayer.Domain.AM_Music_HttpErrorType
 import com.scarry.ammusicplayer.Domain.MusicSummary
-import com.scarry.ammusicplayer.Domain.SearchResult
+import com.scarry.ammusicplayer.Domain.SearchResults
 import com.scarry.ammusicplayer.data.utils.FetchedResource
 import com.scarry.ammusicplayer.data.utils.MapperImageSize
 
@@ -40,5 +40,5 @@ interface Repository {
         searchQuery: String,
         imageSize: MapperImageSize,
         countryCode:String
-    ) :FetchedResource<SearchResult , AM_Music_HttpErrorType>
+    ) :FetchedResource<SearchResults , AM_Music_HttpErrorType>
 }

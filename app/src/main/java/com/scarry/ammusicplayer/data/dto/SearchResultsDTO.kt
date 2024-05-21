@@ -1,8 +1,7 @@
 package com.scarry.ammusicplayer.data.dto
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import com.google.gson.annotations.SerializedName
-import com.scarry.ammusicplayer.Domain.SearchResult
+import com.scarry.ammusicplayer.Domain.SearchResults
 import com.scarry.ammusicplayer.data.utils.MapperImageSize
 
 data class SearchResultsDTO(
@@ -17,7 +16,7 @@ data class SearchResultsDTO(
     data class Playlists(@JsonProperty("items") val value: List<PlaylistMetadataDTO>)
 }
 
-fun SearchResultsDTO.toSearchResults(imageSize: MapperImageSize) = SearchResult(
+fun SearchResultsDTO.toSearchResults(imageSize: MapperImageSize) = SearchResults(
     tracks = tracks?.value?.map { it.toTrackSummary(imageSize) } ?:emptyList(),
     albums = albums?.value?.map { it.toAlbumSummary(imageSize) } ?:emptyList(),
     artists = artists?.value?.map { it.toArtistSummary(imageSize) } ?:emptyList(),

@@ -2,7 +2,7 @@ package com.scarry.ammusicplayer.data.repository
 
 import com.scarry.ammusicplayer.Domain.AM_Music_HttpErrorType
 import com.scarry.ammusicplayer.Domain.MusicSummary
-import com.scarry.ammusicplayer.Domain.SearchResult
+import com.scarry.ammusicplayer.Domain.SearchResults
 import com.scarry.ammusicplayer.Domain.AM_MusicHttpErrorType
 import com.scarry.ammusicplayer.data.dto.toAlbumSummary
 import com.scarry.ammusicplayer.data.dto.toAlbumSummaryList
@@ -82,7 +82,7 @@ class AM_MusicRepository @Inject constructor (
         searchQuery: String,
         imageSize: MapperImageSize,
         countryCode: String
-    ): FetchedResource<SearchResult, AM_Music_HttpErrorType> = withToken{
+    ): FetchedResource<SearchResults, AM_Music_HttpErrorType> = withToken{
         spotifyService.search(searchQuery,countryCode,it).toSearchResults(imageSize)
     }
 
