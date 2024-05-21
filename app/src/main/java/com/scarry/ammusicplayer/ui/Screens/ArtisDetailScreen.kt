@@ -79,7 +79,7 @@ fun ArtisDetailScreen(
                 cardType = ListItemCardType.SONG,
                 thumbnailImageUrlString = it.associatedImageUrl.toString(),
                 title = it.name,
-                subtitle = "${it.numberOfPlays} plays",
+                subtitle = it.albumName,
                 subtitleTextStyle = MaterialTheme.typography.caption.copy(
                     color = subtitleTextColorWithAlpha
                 ),

@@ -21,7 +21,6 @@ fun TrackDTOWithAlbumMetadata.toTrackSummary(imageSize: MapperImageSize)= MusicS
     id = id,
     name = name,
     associatedImageUrl =  URL(albumMetadata.images.getImageDTOForImageSize(imageSize).url),
-    nameOfArtist = albumMetadata.artists.first().name,
-    trackURL =preview_url?.let (::URL),
-    numberOfPlays =-1
+    albumName = albumMetadata.name,
+    trackURL =preview_url?.let (::URL)
 )
