@@ -1,8 +1,11 @@
 package com.scarry.ammusicplayer.ui.Screens
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -21,12 +24,14 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -60,9 +65,22 @@ fun SearchScreen(
     onSearchQueryItemClicked: (SearchResult) -> Unit,
 ) {
     var searchText by remember { mutableStateOf("") }
+    var isClearSearchTextButtonVisible by remember { mutableStateOf(false) }
     val isLoadingMap = remember { mutableStateMapOf<String, Boolean>() }
     var isSearchListVisible by remember { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
+    val textFieldTrailingButton = @Composable {
+        AnimatedVisibility(
+            visible = isSearchListVisible,
+            enter = fadeIn() + slideInHorizontally { it },
+            exit = slideOutHorizontally() + fadeOut()
+        ) {
+            IconButton(
+                onClick = { searchText = " " },
+                content = { Icon(imageVector = Icons.Filled.Close, contentDescription = null) }
+            )
+        }
+    }
     BackHandler(isSearchListVisible) {
         searchText = ""
         focusManager.clearFocus()
@@ -85,7 +103,10 @@ fun SearchScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .onFocusChanged {
-                    if (it.isFocused) isSearchListVisible = true
+                    if (it.isFocused) {
+                        isSearchListVisible = true
+                        isClearSearchTextButtonVisible = true
+                    }
                 },
             leadingIcon = {
                 Icon(
@@ -93,6 +114,7 @@ fun SearchScreen(
                     contentDescription = null
                 )
             },
+            trailingIcon = textFieldTrailingButton,
             placeholder = {
                 Text(
                     text = "Artist, Song or Album",
@@ -109,6 +131,7 @@ fun SearchScreen(
             colors = TextFieldDefaults.textFieldColors(
                 backgroundColor = Color.White,
                 leadingIconColor = Color.Black,
+                trailingIconColor = Color.Black,
                 placeholderColor = Color.Black,
                 textColor = Color.Black
             )
@@ -196,7 +219,7 @@ private fun SearchQueryList(
         items(searchResults.playlists) {
             AM_MusicPlayerCompactListItemCard(
                 cardType = it.getAssociatedListCardType(),
-                thumbnailImageUrlString = it.imageUrlString?: "",
+                thumbnailImageUrlString = it.imageUrlString ?: "",
                 title = it.name,
                 subtitle = "Playlist",
                 onClick = { onItemClick(it) },
