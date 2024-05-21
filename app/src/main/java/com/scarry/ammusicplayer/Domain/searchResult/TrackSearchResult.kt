@@ -5,5 +5,5 @@ class TrackSearchResult (
     val name :String,
     val imageUrlString :String,
     val artistString :String,
-    val trackUrlString :String
+    val trackUrlString :String?
 )
