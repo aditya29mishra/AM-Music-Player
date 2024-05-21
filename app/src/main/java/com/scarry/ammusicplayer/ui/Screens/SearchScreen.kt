@@ -15,13 +15,16 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -40,17 +43,26 @@ import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.airbnb.lottie.LottieComposition
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.rememberLottieAnimatable
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.google.accompanist.insets.navigationBarsHeight
 import com.scarry.ammusicplayer.Domain.Genre
 import com.scarry.ammusicplayer.Domain.MusicSummary
 import com.scarry.ammusicplayer.Domain.SearchResult
 import com.scarry.ammusicplayer.Domain.SearchResults
+import com.scarry.ammusicplayer.R
 import com.scarry.ammusicplayer.ui.Components.AM_MusicPlayerCompactListItemCard
 import com.scarry.ammusicplayer.ui.Components.GenreCard
 import com.scarry.ammusicplayer.ui.Components.ListItemCardType
@@ -62,6 +74,7 @@ fun SearchScreen(
     genreList: List<Genre>,
     onGenreItemClick: (Genre) -> Unit,
     onSearchTextChanged: (String) -> Unit,
+    isSearchResultLoading: Boolean,
     searchQueryResult: SearchResults,
     onSearchQueryItemClicked: (SearchResult) -> Unit,
 ) {
@@ -87,6 +100,9 @@ fun SearchScreen(
     }
     val isSearchItemLoadingPlaceHolderVisibleMap =
         remember { mutableStateMapOf<SearchResult, Boolean>() }
+    val isSearchResultLoadingAnimationcomposition by rememberLottieComposition(
+        spec =  LottieCompositionSpec.RawRes(R.raw.lottie_loading_anim)
+    )
     BackHandler(isSearchListVisible) {
         focusManager.clearFocus()
         if(searchText.isEmpty())isSearchListVisible = false
@@ -178,6 +194,8 @@ fun SearchScreen(
                         isSearchItemLoadingPlaceHolderVisibleMap[item] = false
                     },
                     onImageLoading = { isSearchItemLoadingPlaceHolderVisibleMap[it] = true },
+                    isSearchResultLoadingAnimationVisible = isSearchResultLoading,
+                    lottieComposition = isSearchResultLoadingAnimationcomposition
                     )
             }
         }
@@ -193,75 +211,97 @@ private fun SearchQueryList(
     isLoadingPlaceHolderVisible: (SearchResult) -> Boolean,
     onImageLoading: (SearchResult) -> Unit,
     onImageLoadingFinished: (SearchResult, Throwable?) -> Unit,
+    isSearchResultLoadingAnimationVisible: Boolean = false,
+    lottieComposition: LottieComposition?,
 ) {
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colors.background),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        items(searchResults.tracks) {
-            AM_MusicPlayerCompactListItemCard(
-                cardType = it.getAssociatedListCardType(),
-                thumbnailImageUrlString = it.imageUrlString,
-                title = it.name,
-                subtitle = it.artistsString,
-                onClick = { onItemClick(it) },
-                onTrailingButtonIconClick = { onTrailingIconButtonClick(it) },
-                isLoadingPlaceHolderVisible = isLoadingPlaceHolderVisible(it),
-                onThumbnailImageLoadingFinished = { throwable ->
-                    onImageLoadingFinished(it, throwable)
-                },
-                onThumbnailLoading = { onImageLoading(it) }
-            )
+    Box {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colors.background),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            items(searchResults.tracks) {
+                AM_MusicPlayerCompactListItemCard(
+                    cardType = it.getAssociatedListCardType(),
+                    thumbnailImageUrlString = it.imageUrlString,
+                    title = it.name,
+                    subtitle = it.artistsString,
+                    onClick = { onItemClick(it) },
+                    onTrailingButtonIconClick = { onTrailingIconButtonClick(it) },
+                    isLoadingPlaceHolderVisible = isLoadingPlaceHolderVisible(it),
+                    onThumbnailImageLoadingFinished = { throwable ->
+                        onImageLoadingFinished(it, throwable)
+                    },
+                    onThumbnailLoading = { onImageLoading(it) }
+                )
+            }
+            items(searchResults.albums) {
+                AM_MusicPlayerCompactListItemCard(
+                    cardType = it.getAssociatedListCardType(),
+                    thumbnailImageUrlString = it.albumArtUrlString,
+                    title = it.name,
+                    subtitle = it.artistsString,
+                    onClick = { onItemClick(it) },
+                    onTrailingButtonIconClick = { onTrailingIconButtonClick(it) },
+                    isLoadingPlaceHolderVisible = isLoadingPlaceHolderVisible(it),
+                    onThumbnailImageLoadingFinished = { throwable ->
+                        onImageLoadingFinished(it, throwable)
+                    },
+                    onThumbnailLoading = { onImageLoading(it) }
+                )
+            }
+            items(searchResults.artists) {
+                AM_MusicPlayerCompactListItemCard(
+                    cardType = it.getAssociatedListCardType(),
+                    thumbnailImageUrlString = it.imageUrlString ?: "",
+                    title = it.name,
+                    subtitle = "Artist",
+                    onClick = { onItemClick(it) },
+                    onTrailingButtonIconClick = { onTrailingIconButtonClick(it) },
+                    isLoadingPlaceHolderVisible = isLoadingPlaceHolderVisible(it),
+                    onThumbnailImageLoadingFinished = { throwable ->
+                        onImageLoadingFinished(it, throwable)
+                    },
+                    onThumbnailLoading = { onImageLoading(it) }
+                )
+            }
+            items(searchResults.playlists) {
+                AM_MusicPlayerCompactListItemCard(
+                    cardType = it.getAssociatedListCardType(),
+                    thumbnailImageUrlString = it.imageUrlString ?: "",
+                    title = it.name,
+                    subtitle = "Playlist",
+                    onClick = { onItemClick(it) },
+                    onTrailingButtonIconClick = { onTrailingIconButtonClick(it) },
+                    isLoadingPlaceHolderVisible = isLoadingPlaceHolderVisible(it),
+                    onThumbnailImageLoadingFinished = { throwable ->
+                        onImageLoadingFinished(it, throwable)
+                    },
+                    onThumbnailLoading = { onImageLoading(it) }
+                )
+            }
+            item {
+                Spacer(modifier = Modifier.navigationBarsHeight())
+            }
         }
-        items(searchResults.albums) {
-            AM_MusicPlayerCompactListItemCard(
-                cardType = it.getAssociatedListCardType(),
-                thumbnailImageUrlString = it.albumArtUrlString,
-                title = it.name,
-                subtitle = it.artistsString,
-                onClick = { onItemClick(it) },
-                onTrailingButtonIconClick = { onTrailingIconButtonClick(it) },
-                isLoadingPlaceHolderVisible = isLoadingPlaceHolderVisible(it),
-                onThumbnailImageLoadingFinished = { throwable ->
-                    onImageLoadingFinished(it, throwable)
-                },
-                onThumbnailLoading = { onImageLoading(it) }
+        AnimatedVisibility(
+            modifier = Modifier
+                .padding(16.dp)
+                .size(128.dp)
+                .align(Alignment.Center)
+                .offset(y = (-100).dp)
+                .clip(RoundedCornerShape(16.dp))
+                .background(Color.White.copy(alpha = 0.1f))
+                .padding(16.dp),
+            visible = isSearchResultLoadingAnimationVisible,
+            enter = fadeIn(),
+            exit = fadeOut()
+        ) {
+            LottieAnimation(
+                composition = lottieComposition ,
+                iterations = LottieConstants.IterateForever
             )
-        }
-        items(searchResults.artists) {
-            AM_MusicPlayerCompactListItemCard(
-                cardType = it.getAssociatedListCardType(),
-                thumbnailImageUrlString = it.imageUrlString ?: "",
-                title = it.name,
-                subtitle = "Artist",
-                onClick = { onItemClick(it) },
-                onTrailingButtonIconClick = { onTrailingIconButtonClick(it) },
-                isLoadingPlaceHolderVisible = isLoadingPlaceHolderVisible(it),
-                onThumbnailImageLoadingFinished = { throwable ->
-                    onImageLoadingFinished(it, throwable)
-                },
-                onThumbnailLoading = { onImageLoading(it) }
-            )
-        }
-        items(searchResults.playlists) {
-            AM_MusicPlayerCompactListItemCard(
-                cardType = it.getAssociatedListCardType(),
-                thumbnailImageUrlString = it.imageUrlString ?: "",
-                title = it.name,
-                subtitle = "Playlist",
-                onClick = { onItemClick(it) },
-                onTrailingButtonIconClick = { onTrailingIconButtonClick(it) },
-                isLoadingPlaceHolderVisible = isLoadingPlaceHolderVisible(it),
-                onThumbnailImageLoadingFinished = { throwable ->
-                    onImageLoadingFinished(it, throwable)
-                },
-                onThumbnailLoading = { onImageLoading(it) }
-            )
-        }
-        item {
-            Spacer(modifier = Modifier.navigationBarsHeight())
         }
     }
 }
