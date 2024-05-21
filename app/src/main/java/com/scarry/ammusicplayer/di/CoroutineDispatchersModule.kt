@@ -1,5 +1,6 @@
 package com.scarry.ammusicplayer.di
 
+import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ActivityRetainedComponent
@@ -15,6 +16,7 @@ annotation class DefaultDispatcher
 
 @Qualifier
 annotation class IoDispatcher
+@Module
 @InstallIn(ActivityRetainedComponent::class)
 object CoroutineDispatchersModule {
     @Provides
