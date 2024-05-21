@@ -78,7 +78,7 @@ fun MusicDetailScreen(
         items(trackList){
             AM_MusicPlayerCompactListItemCard(
                 title = it.name,
-                subtitle = it.nameOfArtist,
+                subtitle = it.albumName,
                 onClick = { onTrackItemClick(it) },
                 trailingButtonIcon = Icons.Default.MoreVert,
                 onTrailingButtonIconClick = { onTrackTrailingButtonClick(it)},
