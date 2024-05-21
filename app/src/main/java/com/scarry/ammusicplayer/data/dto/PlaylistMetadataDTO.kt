@@ -21,8 +21,8 @@ fun PlaylistMetadataDTO.toPlaylistSummary() =MusicSummary.PlaylistSummary(
     associatedImageUrl = URL(images.first().url)
 )
 
-fun PlaylistMetadataDTO.toPlaylistSearchResult(imageSize: MapperImageSize) = PlaylistSearchResult(
+fun PlaylistMetadataDTO.toPlaylistSearchResult() = PlaylistSearchResult(
     id = id,
     name = name,
-    imageUrlString = images.getImageDTOForImageSize(imageSize).url
+    imageUrlString = images.first().url
 )
