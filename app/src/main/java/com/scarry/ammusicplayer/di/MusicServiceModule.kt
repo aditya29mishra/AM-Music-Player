@@ -16,7 +16,7 @@ import javax.inject.Singleton
 object MusicServiceModule {
     @Provides
     @Singleton
-    fun PorivdeSpotifyModule(): SpotifyService = Retrofit.Builder()
+    fun provideSpotifyModule(): SpotifyService = Retrofit.Builder()
         .baseUrl(SpotifyBaseUrls.API_URL)
         .addConverterFactory(defaultAM_MusicJacksonConverterFactory)
         .build()
@@ -24,7 +24,7 @@ object MusicServiceModule {
 
     @Provides
     @Singleton
-    fun ProvidesTokenManeger() : TokenManager = Retrofit.Builder()
+    fun providesTokenManager() : TokenManager = Retrofit.Builder()
         .baseUrl(SpotifyBaseUrls.AUTHENTICATION_URL)
         .addConverterFactory(defaultAM_MusicJacksonConverterFactory)
         .build()

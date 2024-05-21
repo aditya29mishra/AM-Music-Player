@@ -1,11 +1,8 @@
 package com.scarry.ammusicplayer.data.dto
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import com.google.gson.annotations.SerializedName
 import com.scarry.ammusicplayer.Domain.MusicSummary
-import com.scarry.ammusicplayer.Domain.searchResult.PlaylistSearchResult
-import com.scarry.ammusicplayer.data.utils.MapperImageSize
-import com.scarry.ammusicplayer.data.utils.getImageDTOForImageSize
+import com.scarry.ammusicplayer.Domain.SearchResult
 import java.net.URL
 
 data class PlaylistMetadataDTO(
@@ -21,7 +18,7 @@ fun PlaylistMetadataDTO.toPlaylistSummary() =MusicSummary.PlaylistSummary(
     associatedImageUrl = URL(images.first().url)
 )
 
-fun PlaylistMetadataDTO.toPlaylistSearchResult() = PlaylistSearchResult(
+fun PlaylistMetadataDTO.toPlaylistSearchResult() = SearchResult.PlaylistSearchResult(
     id = id,
     name = name,
     imageUrlString = images.first().url

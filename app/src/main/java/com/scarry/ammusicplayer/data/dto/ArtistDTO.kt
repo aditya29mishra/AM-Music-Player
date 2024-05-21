@@ -1,7 +1,7 @@
 package com.scarry.ammusicplayer.data.dto
 
 import com.scarry.ammusicplayer.Domain.MusicSummary
-import com.scarry.ammusicplayer.Domain.searchResult.ArtistSearchResult
+import com.scarry.ammusicplayer.Domain.SearchResult
 import com.scarry.ammusicplayer.data.utils.MapperImageSize
 import com.scarry.ammusicplayer.data.utils.getImageDTOForImageSize
 import java.net.URL
@@ -20,7 +20,7 @@ fun ArtistDTO.toArtistSummary(imageSize: MapperImageSize) = MusicSummary.ArtistS
     name = name,
     associatedImageUrl = URL(images.getImageDTOForImageSize(imageSize).url)
 )
-fun ArtistDTO.toArtistSearchResult(imageSize: MapperImageSize) = ArtistSearchResult(
+fun ArtistDTO.toArtistSearchResult(imageSize: MapperImageSize) = SearchResult.ArtistSearchResult(
     id = id,
     name = name,
     imageUrlString = images.getImageDTOForImageSize(imageSize).url

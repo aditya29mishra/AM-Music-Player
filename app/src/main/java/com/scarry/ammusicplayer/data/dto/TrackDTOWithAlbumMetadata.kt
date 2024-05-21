@@ -1,9 +1,8 @@
 package com.scarry.ammusicplayer.data.dto
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import com.google.gson.annotations.SerializedName
 import com.scarry.ammusicplayer.Domain.MusicSummary
-import com.scarry.ammusicplayer.Domain.searchResult.TrackSearchResult
+import com.scarry.ammusicplayer.Domain.SearchResult
 import com.scarry.ammusicplayer.data.utils.MapperImageSize
 import com.scarry.ammusicplayer.data.utils.getImageDTOForImageSize
 import java.net.URL
@@ -26,10 +25,11 @@ fun TrackDTOWithAlbumMetadata.toTrackSummary(imageSize: MapperImageSize)= MusicS
     trackURL =preview_url?.let (::URL)
 )
 
-fun TrackDTOWithAlbumMetadata.toTrackSearchResult(imageSize: MapperImageSize)= TrackSearchResult(
-    id = id,
-    name = name,
-    imageUrlString = albumMetadata.images.getImageDTOForImageSize(imageSize).url,
-    artistString = albumMetadata.artists.joinToString (","),
-    trackUrlString = preview_url
+fun TrackDTOWithAlbumMetadata.toTrackSearchResult(imageSize: MapperImageSize)=
+    SearchResult.TrackSearchResult(
+        id = id,
+        name = name,
+        imageUrlString = albumMetadata.images.getImageDTOForImageSize(imageSize).url,
+        artistsString = albumMetadata.artists.joinToString(","),
+        trackUrlString = preview_url
     )
