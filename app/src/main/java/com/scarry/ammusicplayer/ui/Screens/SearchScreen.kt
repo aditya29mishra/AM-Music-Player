@@ -186,7 +186,7 @@ private fun SearchQueryList(
         items(searchResults.artists) {
             AM_MusicPlayerCompactListItemCard(
                 cardType = it.getAssociatedListCardType(),
-                thumbnailImageUrlString = it.imageUrlString,
+                thumbnailImageUrlString = it.imageUrlString ?: "",
                 title = it.name,
                 subtitle = "Artist",
                 onClick = { onItemClick(it) },
@@ -196,7 +196,7 @@ private fun SearchQueryList(
         items(searchResults.playlists) {
             AM_MusicPlayerCompactListItemCard(
                 cardType = it.getAssociatedListCardType(),
-                thumbnailImageUrlString = it.imageUrlString,
+                thumbnailImageUrlString = it.imageUrlString?: "",
                 title = it.name,
                 subtitle = "Playlist",
                 onClick = { onItemClick(it) },
