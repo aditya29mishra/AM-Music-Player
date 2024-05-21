@@ -7,10 +7,13 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -62,6 +65,7 @@ import com.scarry.ammusicplayer.Domain.SearchResult
 import com.scarry.ammusicplayer.Domain.SearchResults
 import com.scarry.ammusicplayer.R
 import com.scarry.ammusicplayer.ui.Components.AM_MusicPlayerCompactListItemCard
+import com.scarry.ammusicplayer.ui.Components.FilterChip
 import com.scarry.ammusicplayer.ui.Components.GenreCard
 import com.scarry.ammusicplayer.ui.Components.ListItemCardType
 
@@ -306,6 +310,27 @@ private fun SearchQueryList(
             LottieAnimation(
                 composition = lottieComposition ,
                 iterations = LottieConstants.IterateForever
+            )
+        }
+    }
+}
+@Composable
+fun FilterChipGroup(
+    scrollState: ScrollState,
+    filters: List<SearchScreenFilters>,
+    currentlySelectedFilter: SearchScreenFilters,
+    onFilterClicked: (SearchScreenFilters) -> Unit,
+    modifier: Modifier = Modifier,
+){
+    Row(
+      modifier = Modifier.horizontalScroll(scrollState),
+        horizontalArrangement = Arrangement.spacedBy(16.dp)
+    ){
+        filters.forEach {
+            FilterChip(
+                text = it.filterLabel,
+                isSelected = it == currentlySelectedFilter,
+                onClick = { onFilterClicked(it) }
             )
         }
     }
