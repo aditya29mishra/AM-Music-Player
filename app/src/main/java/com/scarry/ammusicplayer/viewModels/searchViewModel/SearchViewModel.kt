@@ -11,6 +11,7 @@ import com.scarry.ammusicplayer.data.repository.AM_MusicRepository
 import com.scarry.ammusicplayer.data.utils.FetchedResource
 import com.scarry.ammusicplayer.data.utils.MapperImageSize
 import com.scarry.ammusicplayer.di.AM_MusicApplication
+import com.scarry.ammusicplayer.di.DefaultDispatcher
 import com.scarry.ammusicplayer.di.IoDispatcher
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -24,7 +25,8 @@ enum class SearchScreenUiState{LOADING, SUCCESS, IDLE}
 class SearchViewModel @Inject constructor(
     application: Application,
     private val repository: AM_MusicRepository,
-    @IoDispatcher private val defaultDispatcher: CoroutineDispatcher
+    @DefaultDispatcher private val defaultDispatcher: CoroutineDispatcher,
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) : AndroidViewModel(application) {
     private var searchJob: Job? = null
     private val emptySearchResults = emptySearchResults()
@@ -42,7 +44,7 @@ class SearchViewModel @Inject constructor(
             return
         }
         val countryCode = getApplication<AM_MusicApplication>().resources.configuration.locale.country
-        searchJob = viewModelScope.launch(defaultDispatcher) {
+        searchJob = viewModelScope.launch(ioDispatcher) {
             delay(1_500)
             val searchResult = repository.fetchSearchResultForQuery(
                 searchQuery  = searchQuery.trim(),
