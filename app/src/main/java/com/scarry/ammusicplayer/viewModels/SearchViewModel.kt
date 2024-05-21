@@ -12,6 +12,7 @@ import com.scarry.ammusicplayer.data.utils.FetchedResource
 import com.scarry.ammusicplayer.data.utils.MapperImageSize
 import com.scarry.ammusicplayer.di.AM_MusicApplication
 import com.scarry.ammusicplayer.di.DefaultDispatcher
+import com.scarry.ammusicplayer.di.IoDispatcher
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
@@ -23,7 +24,7 @@ import javax.inject.Inject
 class SearchViewModel @Inject constructor(
     application: Application,
     private val repository: AM_MusicRepository,
-    @DefaultDispatcher private val defaultDispatcher: CoroutineDispatcher
+    @IoDispatcher private val defaultDispatcher: CoroutineDispatcher
 ) : AndroidViewModel(application) {
     private var searchJob: Job? = null
     private val emptySearchResults = emptySearchResults()
