@@ -76,7 +76,7 @@ fun ArtisDetailScreen(
                 modifier = Modifier
                     .height(64.dp)
                     .padding(horizontal = 16.dp),
-                cardType = ListItemCardType.SONG,
+                cardType = ListItemCardType.TRACK,
                 thumbnailImageUrlString = it.associatedImageUrl.toString(),
                 title = it.name,
                 subtitle = it.albumName,

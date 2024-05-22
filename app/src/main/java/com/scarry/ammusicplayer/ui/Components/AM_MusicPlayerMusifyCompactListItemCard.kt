@@ -42,7 +42,7 @@ import com.google.accompanist.placeholder.material.shimmer
 import com.scarry.ammusicplayer.R
 import com.scarry.ammusicplayer.utils.conditional
 
-enum class ListItemCardType { ALBUM, ARTIST, SONG, PLAYLIST }
+enum class ListItemCardType { ALBUM, ARTIST, TRACK, PLAYLIST }
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -151,7 +151,7 @@ fun AM_MusicPlayerCompactListItemCard(
         subtitle = subtitle,
         onClick = onClick,
         trailingButtonIcon = when (cardType) {
-            ListItemCardType.SONG -> Icons.Filled.MoreVert
+            ListItemCardType.TRACK -> Icons.Filled.MoreVert
             else -> ImageVector.vectorResource(id = R.drawable.baseline_chevron_right_24)
         },
         onTrailingButtonIconClick = onTrailingButtonIconClick,

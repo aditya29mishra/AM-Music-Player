@@ -390,7 +390,7 @@ private fun SearchResult.getAssociatedListCardType(): ListItemCardType = when (t
     is SearchResult.AlbumSearchResult -> ListItemCardType.ALBUM
     is SearchResult.ArtistSearchResult -> ListItemCardType.ARTIST
     is SearchResult.PlaylistSearchResult -> ListItemCardType.PLAYLIST
-    is SearchResult.TrackSearchResult -> ListItemCardType.SONG
+    is SearchResult.TrackSearchResult -> ListItemCardType.TRACK
 }
 fun getImageResourceForGenreType(genre: Genre.GenreType) = when(genre) {
     Genre.GenreType.AMBIENT -> R.drawable.genre_img_ambient
@@ -403,6 +403,7 @@ fun getImageResourceForGenreType(genre: Genre.GenreType) = when(genre) {
     Genre.GenreType.ROCK -> R.drawable.genre_img_rock
     Genre.GenreType.PIANO -> R.drawable.genre_img_piano
     Genre.GenreType.POP -> R.drawable.genre_img_pop
+    Genre.GenreType.SLEEP -> R.drawable.genre_img_sleep
 }
 private fun getBackgroundColorForGenreType(genreType: Genre.GenreType) = when (genreType) {
     Genre.GenreType.AMBIENT -> Color(0, 48, 72)
@@ -415,4 +416,5 @@ private fun getBackgroundColorForGenreType(genreType: Genre.GenreType) = when (g
     Genre.GenreType.ROCK -> Color(230, 30, 50)
     Genre.GenreType.PIANO -> Color(71, 125, 149)
     Genre.GenreType.POP -> Color(141, 103, 171)
+    Genre.GenreType.SLEEP ->Color(30,50,100)
 }
