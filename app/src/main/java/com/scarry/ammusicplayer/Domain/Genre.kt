@@ -17,7 +17,8 @@ data class Genre(
         RAINY_DAY,
         ROCK,
         PIANO,
-        POP
+        POP,
+        SLEEP;
     }
 }
 /**
@@ -35,4 +36,5 @@ fun Genre.GenreType.toSupportedSpotifyGenreType() = when (this) {
     Genre.GenreType.ROCK -> SupportedSpotifyGenres.ROCK
     Genre.GenreType.PIANO -> SupportedSpotifyGenres.PIANO
     Genre.GenreType.POP -> SupportedSpotifyGenres.POP
+    Genre.GenreType.SLEEP -> SupportedSpotifyGenres.SLEEP
 }
