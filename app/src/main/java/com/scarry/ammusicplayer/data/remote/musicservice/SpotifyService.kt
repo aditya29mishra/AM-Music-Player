@@ -14,6 +14,17 @@ import retrofit2.http.Header
 import retrofit2.http.Path
 import retrofit2.http.Query
 
+enum class SupportedSpotifyGenres (private  val queryStringValue: String){
+    AMBIENT("ambient"),
+    CHILL("chill"),
+    CLASSICAL("classical"),
+    DANCE("dance"),
+    ELECTRICAL("electrical"),
+    METAL("metal"),
+    RAINY_DAY("rainy-day"),
+    ROCK("rock"),
+    PIANO("piano")
+}
 interface SpotifyService {
     @GET(SpotifyEndPoints.SPECIFIC_ARTIST_ENDPOINT)
     suspend fun getArtistInfoWithId(
