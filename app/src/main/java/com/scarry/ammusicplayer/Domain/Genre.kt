@@ -3,6 +3,7 @@ package com.scarry.ammusicplayer.Domain
 data class Genre(
     val id: String,
     val name: String,
+    val genreType : GenreType
 ){
     enum class GenreType {
         AMBIENT,
