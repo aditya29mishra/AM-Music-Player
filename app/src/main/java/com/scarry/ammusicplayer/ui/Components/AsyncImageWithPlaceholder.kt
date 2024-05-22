@@ -7,6 +7,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.DefaultAlpha
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
@@ -23,7 +24,7 @@ fun AsyncImageWithPlaceholder(
     modifier: Modifier = Modifier,
     isLoadingPlaceholderVisible: Boolean,
     placeholderHighlight: PlaceholderHighlight = PlaceholderHighlight.shimmer(),
-    transform: (AsyncImagePainter.State) -> AsyncImagePainter.State = AsyncImagePainter.DefaultTransform,
+    errorPainter: Painter? = null,//that is displayed when the image request is unsuccessful.
     alignment: Alignment = Alignment.Center,
     contentScale: ContentScale = ContentScale.Fit,
     alpha: Float = DefaultAlpha,
@@ -38,19 +39,14 @@ fun AsyncImageWithPlaceholder(
             ),
         model = model,
         contentDescription = contentDescription,
-        transform = transform,
         alignment = alignment,
         contentScale = contentScale,
         alpha = alpha,
         colorFilter = colorFilter,
         filterQuality = filterQuality,
-        onState = {
-            when (it) {
-                AsyncImagePainter.State.Empty -> {}
-                is AsyncImagePainter.State.Loading -> onImageLoading()
-                is AsyncImagePainter.State.Success -> onImageLoadingFinished(null)
-                is AsyncImagePainter.State.Error -> onImageLoadingFinished(it.result.throwable)
-            }
-        },
+        onError = { onImageLoadingFinished(it.result.throwable) },
+        onSuccess = { onImageLoadingFinished(null) },
+        onLoading = { onImageLoading() },
+        error = errorPainter,
     )
 }

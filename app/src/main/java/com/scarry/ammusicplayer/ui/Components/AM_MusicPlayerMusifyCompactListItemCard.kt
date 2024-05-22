@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.vectorResource
@@ -59,6 +60,7 @@ fun AM_MusicPlayerCompactListItemCard(
     isLoadingPlaceHolderVisible: Boolean = false,
     onThumbnailLoading: (() -> Unit)? = null,
     onThumbnailImageLoadingFinished: ((Throwable?) -> Unit)? = null,
+    errorPainter: Painter? = null,
     placeholderHighlight: PlaceholderHighlight = PlaceholderHighlight.shimmer(),
 
     ){
@@ -86,6 +88,7 @@ fun AM_MusicPlayerCompactListItemCard(
                     onImageLoadingFinished = { onThumbnailImageLoadingFinished?.invoke(it) },
                     placeholderHighlight = placeholderHighlight,
                     contentScale = ContentScale.Crop,
+                    errorPainter = errorPainter,
                 )
             }
             Column (
@@ -137,6 +140,7 @@ fun AM_MusicPlayerCompactListItemCard(
     isLoadingPlaceHolderVisible: Boolean = false,
     onThumbnailLoading: (() -> Unit)? = null,
     onThumbnailImageLoadingFinished: ((Throwable?) -> Unit)? = null,
+    errorPainter: Painter? = null,
     placeholderHighlight: PlaceholderHighlight = PlaceholderHighlight.shimmer()
 
 ){
@@ -157,7 +161,8 @@ fun AM_MusicPlayerCompactListItemCard(
         isLoadingPlaceHolderVisible = isLoadingPlaceHolderVisible,
         onThumbnailLoading = onThumbnailLoading,
         onThumbnailImageLoadingFinished = onThumbnailImageLoadingFinished,
-        placeholderHighlight = placeholderHighlight
+        placeholderHighlight = placeholderHighlight,
+        errorPainter = errorPainter
 
     )
 }
