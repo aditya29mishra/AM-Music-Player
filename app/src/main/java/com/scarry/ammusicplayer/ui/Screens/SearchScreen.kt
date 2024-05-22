@@ -260,6 +260,7 @@ private fun SearchQueryList(
     lazyListState: LazyListState = rememberLazyListState()
 ) {
     val artistImageErrorPainter = rememberVectorPainter(ImageVector.vectorResource(id = R.drawable.baseline_account_circle_24))
+    val playlistsImageErrorPainter = rememberVectorPainter(ImageVector.vectorResource(id = R.drawable.baseline_music_note_24))
    Box {
         LazyColumn(
             modifier = Modifier
@@ -327,6 +328,7 @@ private fun SearchQueryList(
                         onImageLoadingFinished(it, throwable)
                     },
                     onThumbnailLoading = { onImageLoading(it) },
+                    errorPainter = playlistsImageErrorPainter
                 )
             }
             item {
