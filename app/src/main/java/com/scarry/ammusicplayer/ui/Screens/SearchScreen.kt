@@ -130,7 +130,12 @@ fun SearchScreen(
     val horizontalPaddingModifier = Modifier.padding(horizontal = 16.dp)
     BackHandler(isSearchListVisible) {
         focusManager.clearFocus()
-        if (searchText.isEmpty()) isSearchListVisible = false
+        if (searchText.isNotEmpty()){
+            searchText = ""
+            // notify the caller that the text has been emptied out
+            onSearchTextChanged(searchText, currentlySelectedSearchScreenFilter)
+        }
+        isSearchListVisible = false
     }
     val lazyListState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
@@ -222,6 +227,9 @@ fun SearchScreen(
                         imageResourceId = getImageResourceForGenreType(it.genreType),
                         backgroundColor = getBackgroundColorForGenreType(it.genreType)
                     )
+                }
+                item(span = { GridItemSpan(this.maxCurrentLineSpan) }) {
+                    Spacer(modifier = Modifier.navigationBarsHeight())
                 }
             }
             androidx.compose.animation.AnimatedVisibility(
