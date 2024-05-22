@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.scarry.ammusicplayer.Domain.SearchResults
 import com.scarry.ammusicplayer.Domain.emptySearchResults
 import com.scarry.ammusicplayer.data.repository.AM_MusicRepository
+import com.scarry.ammusicplayer.data.repository.Repository
 import com.scarry.ammusicplayer.data.utils.FetchedResource
 import com.scarry.ammusicplayer.data.utils.MapperImageSize
 import com.scarry.ammusicplayer.di.AM_MusicApplication
@@ -24,7 +25,7 @@ enum class SearchScreenUiState{LOADING, SUCCESS, IDLE}
 @HiltViewModel
 class SearchViewModel @Inject constructor(
     application: Application,
-    private val repository: AM_MusicRepository,
+    private val repository: Repository,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) : AndroidViewModel(application) {
     private var searchJob: Job? = null
