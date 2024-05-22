@@ -4,6 +4,7 @@ import com.scarry.ammusicplayer.Domain.AM_Music_HttpErrorType
 import com.scarry.ammusicplayer.Domain.MusicSummary
 import com.scarry.ammusicplayer.Domain.SearchResults
 import com.scarry.ammusicplayer.Domain.AM_MusicHttpErrorType
+import com.scarry.ammusicplayer.Domain.Genre
 import com.scarry.ammusicplayer.data.dto.toAlbumSummary
 import com.scarry.ammusicplayer.data.dto.toAlbumSummaryList
 import com.scarry.ammusicplayer.data.dto.toArtistSummary
@@ -11,6 +12,8 @@ import com.scarry.ammusicplayer.data.dto.toPlaylistSummary
 import com.scarry.ammusicplayer.data.dto.toSearchResults
 import com.scarry.ammusicplayer.data.dto.toTrackSummary
 import com.scarry.ammusicplayer.data.remote.musicservice.SpotifyService
+import com.scarry.ammusicplayer.data.remote.musicservice.SupportedSpotifyGenres
+import com.scarry.ammusicplayer.data.remote.musicservice.toGenre
 import com.scarry.ammusicplayer.data.remote.token.BearerToken
 import com.scarry.ammusicplayer.data.repository.tokenrepository.TokenRepository
 import com.scarry.ammusicplayer.data.utils.FetchedResource
@@ -84,6 +87,10 @@ class AM_MusicRepository @Inject constructor (
         countryCode: String
     ): FetchedResource<SearchResults, AM_Music_HttpErrorType> = withToken{
         spotifyService.search(searchQuery,countryCode,it).toSearchResults(imageSize)
+    }
+
+    override suspend fun fetchAvailableGenre(): List<Genre> = SupportedSpotifyGenres.values().map{
+        it.toGenre()
     }
 
 }

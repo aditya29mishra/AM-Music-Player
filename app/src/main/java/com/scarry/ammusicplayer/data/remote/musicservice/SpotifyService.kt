@@ -18,7 +18,7 @@ enum class SupportedSpotifyGenres (private  val queryStringValue: String){
     CHILL("chill"),
     CLASSICAL("classical"),
     DANCE("dance"),
-    ELECTRICAL("electrical"),
+    ELECTRONIC("electrical"),
     METAL("metal"),
     RAINY_DAY("rainy-day"),
     ROCK("rock"),
@@ -52,7 +52,7 @@ private fun SupportedSpotifyGenres.getGenreType() = when(this) {
     SupportedSpotifyGenres.CHILL -> Genre.GenreType.CHILL
     SupportedSpotifyGenres.CLASSICAL -> Genre.GenreType.CLASSICAL
     SupportedSpotifyGenres.DANCE -> Genre.GenreType.DANCE
-    SupportedSpotifyGenres.ELECTRICAL -> Genre.GenreType.ELECTRONIC
+    SupportedSpotifyGenres.ELECTRONIC -> Genre.GenreType.ELECTRONIC
     SupportedSpotifyGenres.METAL -> Genre.GenreType.METAL
     SupportedSpotifyGenres.RAINY_DAY -> Genre.GenreType.RAINY_DAY
     SupportedSpotifyGenres.ROCK -> Genre.GenreType.ROCK
