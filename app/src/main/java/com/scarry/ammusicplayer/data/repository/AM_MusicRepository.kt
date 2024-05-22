@@ -5,11 +5,14 @@ import com.scarry.ammusicplayer.Domain.MusicSummary
 import com.scarry.ammusicplayer.Domain.SearchResults
 import com.scarry.ammusicplayer.Domain.AM_MusicHttpErrorType
 import com.scarry.ammusicplayer.Domain.Genre
+import com.scarry.ammusicplayer.Domain.SearchResult
+import com.scarry.ammusicplayer.Domain.toSupportedSpotifyGenreType
 import com.scarry.ammusicplayer.data.dto.toAlbumSummary
 import com.scarry.ammusicplayer.data.dto.toAlbumSummaryList
 import com.scarry.ammusicplayer.data.dto.toArtistSummary
 import com.scarry.ammusicplayer.data.dto.toPlaylistSummary
 import com.scarry.ammusicplayer.data.dto.toSearchResults
+import com.scarry.ammusicplayer.data.dto.toTrackSearchResult
 import com.scarry.ammusicplayer.data.dto.toTrackSummary
 import com.scarry.ammusicplayer.data.remote.musicservice.SpotifyService
 import com.scarry.ammusicplayer.data.remote.musicservice.SupportedSpotifyGenres
@@ -91,6 +94,20 @@ class AM_MusicRepository @Inject constructor (
 
     override suspend fun fetchAvailableGenre(): List<Genre> = SupportedSpotifyGenres.values().map{
         it.toGenre()
+    }
+
+    override suspend fun fetchTracksForGenre(
+        genre: Genre,
+        imageSize: MapperImageSize,
+        countryCode: String
+    ): FetchedResource<List<SearchResult.TrackSearchResult>, AM_Music_HttpErrorType> = withToken{
+        spotifyService.getTracksForGenre(
+            genre = genre.genreType.toSupportedSpotifyGenreType(),
+            market = countryCode,
+            token = it
+        ).value.map { trackDTOWithAlbumMetadata ->
+            trackDTOWithAlbumMetadata.toTrackSearchResult(imageSize)
+        }
     }
 
 }

@@ -3,6 +3,7 @@ package com.scarry.ammusicplayer.data.repository
 import com.scarry.ammusicplayer.Domain.AM_Music_HttpErrorType
 import com.scarry.ammusicplayer.Domain.Genre
 import com.scarry.ammusicplayer.Domain.MusicSummary
+import com.scarry.ammusicplayer.Domain.SearchResult
 import com.scarry.ammusicplayer.Domain.SearchResults
 import com.scarry.ammusicplayer.data.utils.FetchedResource
 import com.scarry.ammusicplayer.data.utils.MapperImageSize
@@ -44,4 +45,10 @@ interface Repository {
     ) :FetchedResource<SearchResults , AM_Music_HttpErrorType>
 
     suspend fun  fetchAvailableGenre() : List<Genre>
+
+    suspend fun  fetchTracksForGenre(
+        genre: Genre,
+        imageSize: MapperImageSize,
+        countryCode: String,
+    ): FetchedResource<List<SearchResult.TrackSearchResult>,AM_Music_HttpErrorType>
 }
