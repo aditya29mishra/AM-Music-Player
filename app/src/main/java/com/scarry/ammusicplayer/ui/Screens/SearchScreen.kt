@@ -32,6 +32,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.layout.getDefaultLazyLayoutKey
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -214,10 +215,8 @@ fun SearchScreen(
                     GenreCard(
                         genre = it,
                         modifier = Modifier.height(120.dp),
-                        isLoadingPlaceholderVisible = isGenreImageLoadingMap.getOrPut(it.id) { true },
                         onClick = { onGenreItemClick(it) },
-                        onImageLoading = { isGenreImageLoadingMap[it.id] = true },
-                        onImageLoadingFinished = { _ -> isGenreImageLoadingMap[it.id] = false }
+                        imageResourceId = getImageResourceForGenreType(it.genreType)
                     )
                 }
             }
@@ -245,7 +244,6 @@ fun SearchScreen(
         }
     }
 }
-
 @ExperimentalMaterialApi
 @Composable
 private fun SearchQueryList(
@@ -389,4 +387,16 @@ private fun SearchResult.getAssociatedListCardType(): ListItemCardType = when (t
     is SearchResult.ArtistSearchResult -> ListItemCardType.ARTIST
     is SearchResult.PlaylistSearchResult -> ListItemCardType.PLAYLIST
     is SearchResult.TrackSearchResult -> ListItemCardType.SONG
+}
+fun getImageResourceForGenreType(genre: Genre.GenreType) = when(genre) {
+    Genre.GenreType.AMBIENT -> R.drawable.genre_img_ambient
+    Genre.GenreType.CHILL -> R.drawable.genre_img_chill
+    Genre.GenreType.CLASSICAL -> R.drawable.genre_img_classical
+    Genre.GenreType.DANCE -> R.drawable.genre_img_dance
+    Genre.GenreType.ELECTRONIC -> R.drawable.genre_img_electronic
+    Genre.GenreType.METAL -> R.drawable.genre_img_metal
+    Genre.GenreType.RAINY_DAY -> R.drawable.genre_img_rainy_day
+    Genre.GenreType.ROCK -> R.drawable.genre_img_rock
+    Genre.GenreType.PIANO -> R.drawable.genre_img_piano
+    Genre.GenreType.POP -> R.drawable.genre_img_pop
 }

@@ -7,12 +7,10 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.scarry.ammusicplayer.Domain.SearchResults
 import com.scarry.ammusicplayer.Domain.emptySearchResults
-import com.scarry.ammusicplayer.data.repository.AM_MusicRepository
 import com.scarry.ammusicplayer.data.repository.Repository
 import com.scarry.ammusicplayer.data.utils.FetchedResource
 import com.scarry.ammusicplayer.data.utils.MapperImageSize
 import com.scarry.ammusicplayer.di.AM_MusicApplication
-import com.scarry.ammusicplayer.di.DefaultDispatcher
 import com.scarry.ammusicplayer.di.IoDispatcher
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -88,4 +86,6 @@ class SearchViewModel @Inject constructor(
     fun applyFilterToSearchResult(searchFilter: SearchFilter) {
         filteredSearchResult.value = getSearchResultObjectForFilter(searchFilter)
     }
+
+    fun getAvailableGenre()= repository.fetchAvailableGenre()
 }

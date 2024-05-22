@@ -44,7 +44,7 @@ interface Repository {
         countryCode:String
     ) :FetchedResource<SearchResults , AM_Music_HttpErrorType>
 
-    suspend fun  fetchAvailableGenre() : List<Genre>
+    fun  fetchAvailableGenre() : List<Genre>
 
     suspend fun  fetchTracksForGenre(
         genre: Genre,
