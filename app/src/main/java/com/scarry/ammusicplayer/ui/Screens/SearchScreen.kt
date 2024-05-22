@@ -27,11 +27,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.magnifier
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
@@ -51,6 +52,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -60,7 +62,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.airbnb.lottie.LottieComposition
 import com.airbnb.lottie.compose.LottieAnimation
@@ -77,6 +78,7 @@ import com.scarry.ammusicplayer.ui.Components.FilterChip
 import com.scarry.ammusicplayer.ui.Components.GenreCard
 import com.scarry.ammusicplayer.ui.Components.ListItemCardType
 import com.scarry.ammusicplayer.viewModels.searchViewModel.SearchFilter
+import kotlinx.coroutines.launch
 
 
 @ExperimentalMaterialApi
@@ -84,10 +86,10 @@ import com.scarry.ammusicplayer.viewModels.searchViewModel.SearchFilter
 @Composable
 fun SearchScreen(
     genreList: List<Genre>,
-    searchScreenFilters : List<SearchFilter>,
+    searchScreenFilters: List<SearchFilter>,
     onSearchFilterClicked: (SearchFilter) -> Unit,
     onGenreItemClick: (Genre) -> Unit,
-    onSearchTextChanged: (searchText:String , filter:SearchFilter) -> Unit,
+    onSearchTextChanged: (searchText: String, filter: SearchFilter) -> Unit,
     isSearchResultLoading: Boolean,
     searchQueryResult: SearchResults,
     onSearchQueryItemClicked: (SearchResult) -> Unit,
@@ -95,19 +97,19 @@ fun SearchScreen(
     var searchText by remember { mutableStateOf("") }
     val isGenreImageLoadingMap = remember { mutableStateMapOf<String, Boolean>() }
     var isSearchListVisible by remember { mutableStateOf(false) }
-    val isClearSearchTextButtonVisible by remember { derivedStateOf{ isSearchListVisible && searchText.isNotEmpty() } }
+    val isClearSearchTextButtonVisible by remember { derivedStateOf { isSearchListVisible && searchText.isNotEmpty() } }
     val focusManager = LocalFocusManager.current
     var currentlySelectedSearchScreenFilter by remember { mutableStateOf(SearchFilter.TRACKS) }
     val textFieldTrailingButton = @Composable {
         AnimatedVisibility(
-            visible = isSearchListVisible,
+            visible = isClearSearchTextButtonVisible,
             enter = fadeIn() + slideInHorizontally { it },
-            exit = slideOutHorizontally{it} + fadeOut()
+            exit = slideOutHorizontally { it } + fadeOut()
         ) {
             IconButton(
                 onClick = {
                     searchText = " "
-                onSearchTextChanged("", currentlySelectedSearchScreenFilter)
+                    onSearchTextChanged("", currentlySelectedSearchScreenFilter)
                 },
                 content = { Icon(imageVector = Icons.Filled.Close, contentDescription = null) }
             )
@@ -116,14 +118,17 @@ fun SearchScreen(
     val isSearchItemLoadingPlaceHolderVisibleMap =
         remember { mutableStateMapOf<SearchResult, Boolean>() }
     val isSearchResultLoadingAnimationComposition by rememberLottieComposition(
-        spec =  LottieCompositionSpec.RawRes(R.raw.lottie_loading_anim)
+        spec = LottieCompositionSpec.RawRes(R.raw.lottie_loading_anim)
     )
     val isFilterChipGroupVisible by remember { derivedStateOf { isSearchListVisible } }
-    val horizontalPaddingModifier  = Modifier.padding(horizontal = 16.dp)
+    val horizontalPaddingModifier = Modifier.padding(horizontal = 16.dp)
     BackHandler(isSearchListVisible) {
         focusManager.clearFocus()
-        if(searchText.isEmpty())isSearchListVisible = false
+        if (searchText.isEmpty()) isSearchListVisible = false
     }
+    val lazyListState = rememberLazyListState()
+    val coroutineScope = rememberCoroutineScope()
+    val filterChipGroupScrollState = rememberScrollState()
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -164,7 +169,7 @@ fun SearchScreen(
             value = searchText,
             onValueChange = {
                 searchText = it
-                onSearchTextChanged(it,currentlySelectedSearchScreenFilter)
+                onSearchTextChanged(it, currentlySelectedSearchScreenFilter)
             },
             textStyle = LocalTextStyle.current.copy(fontWeight = FontWeight.SemiBold),
             colors = TextFieldDefaults.textFieldColors(
@@ -179,16 +184,18 @@ fun SearchScreen(
             visible = isFilterChipGroupVisible
         ) {
             FilterChipGroup(
-                scrollState = rememberScrollState(),
+
+                scrollState = filterChipGroupScrollState,
                 filters = SearchFilter.values().toList(),
                 currentlySelectedFilter = currentlySelectedSearchScreenFilter,
                 onFilterClicked = {
-                    currentlySelectedSearchScreenFilter= it
+                    currentlySelectedSearchScreenFilter = it
                     onSearchFilterClicked(it)
+                    coroutineScope.launch { lazyListState.animateScrollToItem(0) }
                 }
             )
         }
-        Box (modifier = horizontalPaddingModifier){
+        Box(modifier = horizontalPaddingModifier) {
             Text(
                 text = "Genres",
                 fontWeight = FontWeight.Bold,
@@ -227,8 +234,9 @@ fun SearchScreen(
                     },
                     onImageLoading = { isSearchItemLoadingPlaceHolderVisibleMap[it] = true },
                     isSearchResultLoadingAnimationVisible = isSearchResultLoading,
-                    lottieComposition = isSearchResultLoadingAnimationComposition
-                    )
+                    lottieComposition = isSearchResultLoadingAnimationComposition,
+                    lazyListState = lazyListState
+                )
             }
         }
     }
@@ -245,15 +253,17 @@ private fun SearchQueryList(
     onImageLoadingFinished: (SearchResult, Throwable?) -> Unit,
     isSearchResultLoadingAnimationVisible: Boolean = false,
     lottieComposition: LottieComposition?,
+    lazyListState: LazyListState = rememberLazyListState()
 ) {
     Box {
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colors.background),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            state = lazyListState
         ) {
-            items(searchResults.tracks , key = {it.id}) {
+            items(searchResults.tracks, key = { it.id }) {
                 AM_MusicPlayerCompactListItemCard(
                     cardType = it.getAssociatedListCardType(),
                     thumbnailImageUrlString = it.imageUrlString,
@@ -268,7 +278,7 @@ private fun SearchQueryList(
                     onThumbnailLoading = { onImageLoading(it) }
                 )
             }
-            items(searchResults.albums, key = {it.id}) {
+            items(searchResults.albums, key = { it.id }) {
                 AM_MusicPlayerCompactListItemCard(
                     cardType = it.getAssociatedListCardType(),
                     thumbnailImageUrlString = it.albumArtUrlString,
@@ -283,7 +293,7 @@ private fun SearchQueryList(
                     onThumbnailLoading = { onImageLoading(it) }
                 )
             }
-            items(searchResults.artists, key = {it.id}) {
+            items(searchResults.artists, key = { it.id }) {
                 AM_MusicPlayerCompactListItemCard(
                     cardType = it.getAssociatedListCardType(),
                     thumbnailImageUrlString = it.imageUrlString ?: "",
@@ -298,7 +308,7 @@ private fun SearchQueryList(
                     onThumbnailLoading = { onImageLoading(it) }
                 )
             }
-            items(searchResults.playlists, key = {it.id}) {
+            items(searchResults.playlists, key = { it.id }) {
                 AM_MusicPlayerCompactListItemCard(
                     cardType = it.getAssociatedListCardType(),
                     thumbnailImageUrlString = it.imageUrlString ?: "",
@@ -331,12 +341,13 @@ private fun SearchQueryList(
             exit = fadeOut()
         ) {
             LottieAnimation(
-                composition = lottieComposition ,
+                composition = lottieComposition,
                 iterations = LottieConstants.IterateForever
             )
         }
     }
 }
+
 @Composable
 fun FilterChipGroup(
     scrollState: ScrollState,
@@ -345,14 +356,14 @@ fun FilterChipGroup(
     onFilterClicked: (SearchFilter) -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(horizontal = 8.dp)
-){
+) {
     val currentLayoutDirection = LocalLayoutDirection.current
     val startPadding = contentPadding.calculateStartPadding(currentLayoutDirection)
     val endPadding = contentPadding.calculateEndPadding(currentLayoutDirection)
     Row(
-      modifier = Modifier.horizontalScroll(scrollState),
+        modifier = Modifier.horizontalScroll(scrollState),
         horizontalArrangement = Arrangement.spacedBy(16.dp)
-    ){
+    ) {
         Spacer(modifier = Modifier.width(startPadding))
         filters.forEach {
             FilterChip(
