@@ -44,7 +44,7 @@ fun SupportedSpotifyGenres.toGenre():  Genre{
     }
     return Genre(
         id = "${this.name} ${ordinal}",
-        name = name,
+        label = name,
         genreType = genreType
     )
 }

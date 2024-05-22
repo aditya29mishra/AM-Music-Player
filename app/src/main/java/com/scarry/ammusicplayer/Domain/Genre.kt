@@ -4,7 +4,7 @@ import com.scarry.ammusicplayer.data.remote.musicservice.SupportedSpotifyGenres
 
 data class Genre(
     val id: String,
-    val name: String,
+    val label: String,
     val genreType : GenreType
 ){
     enum class GenreType {

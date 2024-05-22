@@ -16,19 +16,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.Placeholder
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
-import coil.compose.AsyncImagePainter
-import com.google.accompanist.placeholder.PlaceholderHighlight
-import com.google.accompanist.placeholder.material.placeholder
-import com.google.accompanist.placeholder.material.shimmer
 import com.scarry.ammusicplayer.Domain.Genre
-import org.jetbrains.annotations.Async
+
 @ExperimentalMaterialApi
 @Composable
 fun GenreCard(
@@ -58,7 +50,7 @@ fun GenreCard(
                 modifier = Modifier
                     .align(Alignment.TopStart)
                     .padding(16.dp),
-                text = genre.name,
+                text = genre.label,
                 fontWeight = FontWeight.Bold,
                 style = MaterialTheme.typography.h6
             )
