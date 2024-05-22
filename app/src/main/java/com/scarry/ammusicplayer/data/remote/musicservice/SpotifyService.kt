@@ -73,4 +73,11 @@ interface SpotifyService {
         @Query("offset") offset: Int = 0,
         @Query("type") type: String = SpotifyEndPoints.Defaults.defaultSearchQueryTypes,
     ): SearchResultsDTO
+    @GET(SpotifyEndPoints.RECOMMENDATIONS_ENDPOINT)
+    suspend fun getTracksForGenre(
+        @Query("seed_genres") genre: SupportedSpotifyGenres,
+        @Query("market") market: String,
+        @Header("Authorization") token: BearerToken,
+        @Query("limit") limit: Int = 20
+    ): TracksWithAlbumMetadataListDTO
 }
