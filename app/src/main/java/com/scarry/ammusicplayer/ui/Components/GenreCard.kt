@@ -29,49 +29,6 @@ import com.google.accompanist.placeholder.material.placeholder
 import com.google.accompanist.placeholder.material.shimmer
 import com.scarry.ammusicplayer.Domain.Genre
 import org.jetbrains.annotations.Async
-
-
-
-@OptIn(ExperimentalMaterialApi::class)
-@Composable
-@Deprecated("")
-fun GenreCard(
-    genre: Genre,
-    modifier: Modifier = Modifier,
-    isLoadingPlaceholderVisible: Boolean = false,
-    onClick: (() -> Unit)? = null,
-    onImageLoading: () -> Unit,
-    onImageLoadingFinished: (Throwable?) -> Unit
-
-){
-    Card(
-        modifier = modifier,
-        onClick = onClick?:{}
-    ) {
-        Box(
-            modifier = Modifier.fillMaxSize()
-        ){
-            AsyncImageWithPlaceholder(
-                model = "", // TODO
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                isLoadingPlaceholderVisible = isLoadingPlaceholderVisible,
-                onImageLoading = onImageLoading,
-                onImageLoadingFinished = onImageLoadingFinished
-            )
-            Text(
-                modifier = Modifier
-                    .align(Alignment.TopStart)
-                    .padding(16.dp),
-                text = genre.name,
-                fontWeight = FontWeight.Bold,
-                style = MaterialTheme.typography.h6
-            )
-        }
-    }
-}
-
-
 @ExperimentalMaterialApi
 @Composable
 fun GenreCard(

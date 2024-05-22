@@ -92,7 +92,7 @@ class AM_MusicRepository @Inject constructor (
         spotifyService.search(searchQuery,countryCode,it).toSearchResults(imageSize)
     }
 
-    override suspend fun fetchAvailableGenre(): List<Genre> = SupportedSpotifyGenres.values().map{
+    override  fun fetchAvailableGenre(): List<Genre> = SupportedSpotifyGenres.values().map{
         it.toGenre()
     }
 
