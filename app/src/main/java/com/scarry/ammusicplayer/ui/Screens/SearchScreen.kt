@@ -59,10 +59,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import coil.compose.rememberImagePainter
 import com.airbnb.lottie.LottieComposition
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
@@ -255,7 +259,8 @@ private fun SearchQueryList(
     lottieComposition: LottieComposition?,
     lazyListState: LazyListState = rememberLazyListState()
 ) {
-    Box {
+    val artistImageErrorPainter = rememberVectorPainter(ImageVector.vectorResource(id = R.drawable.baseline_account_circle_24))
+   Box {
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
@@ -305,7 +310,8 @@ private fun SearchQueryList(
                     onThumbnailImageLoadingFinished = { throwable ->
                         onImageLoadingFinished(it, throwable)
                     },
-                    onThumbnailLoading = { onImageLoading(it) }
+                    onThumbnailLoading = { onImageLoading(it) },
+                    errorPainter = artistImageErrorPainter
                 )
             }
             items(searchResults.playlists, key = { it.id }) {
@@ -320,7 +326,7 @@ private fun SearchQueryList(
                     onThumbnailImageLoadingFinished = { throwable ->
                         onImageLoadingFinished(it, throwable)
                     },
-                    onThumbnailLoading = { onImageLoading(it) }
+                    onThumbnailLoading = { onImageLoading(it) },
                 )
             }
             item {
