@@ -5,6 +5,7 @@ import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.ui.PlayerNotificationManager
 import com.google.android.exoplayer2.util.NotificationUtil
+import com.scarry.ammusicplayer.di.MediaDescriptionAdapter
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
@@ -12,11 +13,16 @@ class AmMusicBackgroundMusicPlayer @Inject constructor(
     @ApplicationContext context: Context,
     private val exoPlayer: ExoPlayer
 ) : MusicPlayer {
+    private var currentlyPlayingTrack: MusicPlayer.Track? = null
     private val notificationManager =
         PlayerNotificationManager.Builder(context, NOTIFICATION_ID, NOTIFICATION_CHANNEL_ID)
-            .setChannelImportance(NotificationUtil.IMPORTANCE_LOW).build().apply {
-            setPlayer(exoPlayer)
-        }
+            .setChannelImportance(NotificationUtil.IMPORTANCE_LOW)
+            .setMediaDescriptionAdapter(MediaDescriptionAdapter(
+                getCurrentContentText = {currentlyPlayingTrack?.artistsString?:""},
+                getCurrentContentTitle = {currentlyPlayingTrack?.title?:""},
+                getCurrentLargeIcon = {_,_ -> null},
+            ))
+            .build().apply { setPlayer(exoPlayer) }
 
     override fun playTrackFormUrlString(urlString: String) {
         with(exoPlayer) {
@@ -34,6 +40,16 @@ class AmMusicBackgroundMusicPlayer @Inject constructor(
 
     override fun stopPlayingTrack() {
         exoPlayer.stop()
+    }
+
+    override fun playTrack(track: MusicPlayer.Track) {
+        with(exoPlayer){
+            if(isPlaying)exoPlayer.stop()
+            currentlyPlayingTrack= track
+            setMediaItem(MediaItem.fromUri(track.trackUrlString))
+            prepare()
+            play()
+        }
     }
 
     companion object {
