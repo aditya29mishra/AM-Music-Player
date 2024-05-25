@@ -3,7 +3,6 @@ package com.scarry.ammusicplayer.musicPlayer
 import android.graphics.Bitmap
 
 interface MusicPlayer {
-    fun playTrackFormUrlString(urlString: String)
     fun pauseCurrentlyPlayingTrack()
     fun stopPlayingTrack()
     fun playTrack(track: Track)

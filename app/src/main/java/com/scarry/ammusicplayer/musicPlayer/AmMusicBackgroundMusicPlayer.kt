@@ -24,15 +24,6 @@ class AmMusicBackgroundMusicPlayer @Inject constructor(
             ))
             .build().apply { setPlayer(exoPlayer) }
 
-    override fun playTrackFormUrlString(urlString: String) {
-        with(exoPlayer) {
-            if (isPlaying) exoPlayer.stop()
-
-            setMediaItem(MediaItem.fromUri(urlString))
-            prepare()
-            play()
-        }
-    }
 
     override fun pauseCurrentlyPlayingTrack() {
         exoPlayer.pause()
