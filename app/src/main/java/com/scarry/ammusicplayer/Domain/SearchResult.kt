@@ -1,5 +1,8 @@
 package com.scarry.ammusicplayer.Domain
 
+import android.graphics.Bitmap
+import com.scarry.ammusicplayer.musicPlayer.MusicPlayer
+
 sealed class SearchResult {
     data class AlbumSearchResult(
         val id: String,
@@ -25,4 +28,16 @@ sealed class SearchResult {
         val artistsString: String,
         val trackUrlString: String?
     ) : SearchResult()
+}
+
+fun SearchResult.TrackSearchResult.toMusicPlayerTrack(albumArtBitmap  : Bitmap): MusicPlayer.Track{
+    if (trackUrlString == null ) throw  IllegalStateException("the trackUrlString cant be null during conversation ")
+    return MusicPlayer.Track(
+        id = id,
+        title = name,
+        artistsString = artistsString,
+        trackUrlString = trackUrlString,
+        albumArt = albumArtBitmap
+
+    )
 }
