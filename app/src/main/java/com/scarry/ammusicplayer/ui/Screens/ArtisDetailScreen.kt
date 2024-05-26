@@ -38,20 +38,20 @@ import androidx.compose.ui.unit.dp
 import com.google.accompanist.insets.navigationBarsHeight
 import com.google.accompanist.insets.statusBarsPadding
 import com.scarry.ammusicplayer.Domain.MusicSummary
+import com.scarry.ammusicplayer.Domain.SearchResult
 import com.scarry.ammusicplayer.ui.Components.AM_MusicPlayerCompactListItemCard
 import com.scarry.ammusicplayer.ui.Components.AsyncImageWithPlaceholder
 import com.scarry.ammusicplayer.ui.Components.ListItemCardType
 
 @Composable
 fun ArtisDetailScreen(
-    artistSummary: MusicSummary.ArtistSummary,
-    popularTrack: List<MusicSummary.TrackSummary>,
-    popularReleases: List<MusicSummary.AlbumSummary>,
+    artistSearchResult: SearchResult.ArtistSearchResult,
+    popularTrack: List<SearchResult.TrackSearchResult>,
+    popularReleases: List<SearchResult.AlbumSearchResult>,
     onBackButtonClicked: () -> Unit,
     onPlayButtonClicked: () -> Unit,
-    onTrackClicked: (MusicSummary.TrackSummary) -> Unit,
-    onTrackTrailingButtonIconClicked : (MusicSummary.TrackSummary) -> Unit,
-    onAlbumClicked: (MusicSummary.AlbumSummary) -> Unit
+    onTrackClicked: (SearchResult.TrackSearchResult) -> Unit,
+    onAlbumClicked: (SearchResult.AlbumSearchResult) -> Unit
 ) {
     val subtitleTextColorWithAlpha = MaterialTheme.colors.onBackground.copy(
         alpha = ContentAlpha.disabled
@@ -62,8 +62,8 @@ fun ArtisDetailScreen(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ){
         artistCoverArtHeaderItem(
-            artistName = artistSummary.name,
-            artistCoverArtUrlString = artistSummary.associatedImageUrl.toString(),
+            artistName = artistSearchResult.name,
+            artistCoverArtUrlString = artistSearchResult.imageUrlString ?:"",
             onBackButtonClicked = onBackButtonClicked,
             onPlayButtonClicked = onPlayButtonClicked,
             isLoadingPlaceholderVisible = isCoverArtPlaceholderVisible,
@@ -77,14 +77,14 @@ fun ArtisDetailScreen(
                     .height(64.dp)
                     .padding(horizontal = 16.dp),
                 cardType = ListItemCardType.TRACK,
-                thumbnailImageUrlString = it.associatedImageUrl.toString(),
+                thumbnailImageUrlString = it.imageUrlString,
                 title = it.name,
-                subtitle = it.albumName,
+                subtitle = it.artistsString,
                 subtitleTextStyle = MaterialTheme.typography.caption.copy(
                     color = subtitleTextColorWithAlpha
                 ),
                 onClick = { onTrackClicked(it) },
-                onTrailingButtonIconClick = { onTrackTrailingButtonIconClicked(it) }
+                onTrailingButtonIconClick = { }
             )
         }
         item{
@@ -99,15 +99,14 @@ fun ArtisDetailScreen(
                     .height(80.dp)
                     .padding(horizontal = 16.dp),
                 cardType = ListItemCardType.ALBUM,
-                thumbnailImageUrlString = it.associatedImageUrl.toString(),
+                thumbnailImageUrlString = it.albumArtUrlString,
                 title = it.name,
-                titleTextStyle = MaterialTheme.typography.h6,
-                subtitle =  it.yearOfReleaseString,
+                subtitle = it.artistsString,
                 subtitleTextStyle = MaterialTheme.typography.caption.copy(
                     color = subtitleTextColorWithAlpha
                 ),
                 onClick = { onAlbumClicked(it) },
-                onTrailingButtonIconClick = { onAlbumClicked(it) }
+                onTrailingButtonIconClick = { onAlbumClicked(it)}
             )
         }
         item{
