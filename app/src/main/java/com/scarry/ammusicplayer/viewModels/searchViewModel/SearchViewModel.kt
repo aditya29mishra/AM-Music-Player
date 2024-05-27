@@ -20,6 +20,7 @@ import com.scarry.ammusicplayer.data.utils.MapperImageSize
 import com.scarry.ammusicplayer.di.AM_MusicApplication
 import com.scarry.ammusicplayer.di.IoDispatcher
 import com.scarry.ammusicplayer.musicPlayer.MusicPlayer
+import com.scarry.ammusicplayer.useCase.playTrackUseCase.AmMusicPlayTrackWithMediaNotificationUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -30,27 +31,30 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import kotlin.reflect.jvm.internal.impl.descriptors.Visibilities.Private
 
-enum class SearchScreenUiState{LOADING, SUCCESS, IDLE}
+enum class SearchScreenUiState { LOADING, SUCCESS, IDLE }
+
 @HiltViewModel
 class SearchViewModel @Inject constructor(
     application: Application,
     private val repository: Repository,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
-    private val musicPlayer: MusicPlayer
+    private val musicPlayer: MusicPlayer,
+    private val playTrackWithMediaNotificationUseCase: AmMusicPlayTrackWithMediaNotificationUseCase
 ) : AndroidViewModel(application) {
     private var searchJob: Job? = null
     private val emptySearchResults = emptySearchResults()
     private val _uiState = mutableStateOf(SearchScreenUiState.IDLE)
     private val _searchResults = mutableStateOf(emptySearchResults)
-    private  val filteredSearchResult = mutableStateOf(emptySearchResults)
+    private val filteredSearchResult = mutableStateOf(emptySearchResults)
     val searchResults = _searchResults as State<SearchResults>
     val uiState = _uiState as State<SearchScreenUiState>
 
-    private  fun gerCountryCode() : String = getApplication<AM_MusicApplication>().resources.configuration.locale.country
+    private fun gerCountryCode(): String =
+        getApplication<AM_MusicApplication>().resources.configuration.locale.country
 
-    private  fun getSearchResultObjectForFilter(
+    private fun getSearchResultObjectForFilter(
         searchFilter: SearchFilter
-    ) = if (searchFilter !=SearchFilter.ALL) {
+    ) = if (searchFilter != SearchFilter.ALL) {
         SearchResults(
             tracks = if (searchFilter == SearchFilter.TRACKS) _searchResults.value.tracks
             else emptyList(),
@@ -61,17 +65,12 @@ class SearchViewModel @Inject constructor(
             playlists = if (searchFilter == SearchFilter.PLAYLISTS) _searchResults.value.playlists
             else emptyList()
         )
-    }else _searchResults.value
+    } else _searchResults.value
 
-    private suspend fun downloadBitmapFromUrl(urlString: String) : ImageResult{
-        val imageRequest = ImageRequest.Builder(getApplication()).data(urlString).build()
-        return ImageLoader(getApplication()).execute(imageRequest)
-
-    }
     fun searchWithFilter(
         searchQuery: String,
         searchFilter: SearchFilter = SearchFilter.ALL
-    ){
+    ) {
         searchJob?.cancel()
         if (searchQuery.isBlank()) {
             _searchResults.value = emptySearchResults
@@ -89,35 +88,33 @@ class SearchViewModel @Inject constructor(
             // un-necessary calls to the api
             delay(500)
             val searchResult = repository.fetchSearchResultForQuery(
-                searchQuery  = searchQuery.trim(),
+                searchQuery = searchQuery.trim(),
                 imageSize = MapperImageSize.MEDIUM,
                 countryCode = gerCountryCode()
             )
-            if(searchResult is FetchedResource.Success) {
+            if (searchResult is FetchedResource.Success) {
                 _searchResults.value = searchResult.data
-               filteredSearchResult.value = getSearchResultObjectForFilter(searchFilter)
+                filteredSearchResult.value = getSearchResultObjectForFilter(searchFilter)
             }
             _uiState.value = SearchScreenUiState.SUCCESS
         }
     }
+
     fun applyFilterToSearchResult(searchFilter: SearchFilter) {
         filteredSearchResult.value = getSearchResultObjectForFilter(searchFilter)
     }
-    fun playTrack(track : SearchResult.TrackSearchResult){
-        if(track.trackUrlString == null) return
+
+    fun playTrack(track: SearchResult.TrackSearchResult) {
+        if (track.trackUrlString == null) return
         viewModelScope.launch(ioDispatcher) {
             _uiState.value = SearchScreenUiState.LOADING
-            val downloadAlbumArtResult = downloadBitmapFromUrl(track.imageUrlString)
-            if (downloadAlbumArtResult is SuccessResult){
-                withContext(Dispatchers.Main){
-                    musicPlayer.playTrack(track.toMusicPlayerTrack(downloadAlbumArtResult.drawable.toBitmap()))
-                }
-                _uiState.value = SearchScreenUiState.SUCCESS
-            }else{
-                _uiState.value =SearchScreenUiState.IDLE
-            }
+            playTrackWithMediaNotificationUseCase.invoke(
+                track,
+                onLoading = {_uiState.value = SearchScreenUiState.LOADING},
+                onFinishedLoading = { _uiState.value = SearchScreenUiState.IDLE}
+            )
         }
     }
 
-    fun getAvailableGenre()= repository.fetchAvailableGenre()
+    fun getAvailableGenre() = repository.fetchAvailableGenre()
 }
