@@ -37,7 +37,6 @@ enum class SearchScreenUiState { LOADING, SUCCESS, IDLE }
 class SearchViewModel @Inject constructor(
     application: Application,
     private val repository: Repository,
-    @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
     private val musicPlayer: MusicPlayer,
     private val playTrackWithMediaNotificationUseCase: AmMusicPlayTrackWithMediaNotificationUseCase
 ) : AndroidViewModel(application) {
@@ -79,7 +78,7 @@ class SearchViewModel @Inject constructor(
             return
         }
         _uiState.value = SearchScreenUiState.LOADING
-        searchJob = viewModelScope.launch(ioDispatcher) {
+        searchJob = viewModelScope.launch {
             // add artificial delay to limit the number of calls to
             // the api when the user is typing the search query.
             // adding this delay allows for a short window of time
@@ -106,7 +105,7 @@ class SearchViewModel @Inject constructor(
 
     fun playTrack(track: SearchResult.TrackSearchResult) {
         if (track.trackUrlString == null) return
-        viewModelScope.launch(ioDispatcher) {
+        viewModelScope.launch {
             _uiState.value = SearchScreenUiState.LOADING
             playTrackWithMediaNotificationUseCase.invoke(
                 track,
