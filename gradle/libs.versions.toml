@@ -1,6 +1,6 @@
 [versions]
 accompanistInsets = "0.13.0"
-agp = "8.4.0"
+agp = "8.4.1"
 coilCompose = "2.4.0"
 coreKtxVersion = "1.12.0"
 desugar_jdk_libs = "2.0.4"
