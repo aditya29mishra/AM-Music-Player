@@ -1,5 +1,8 @@
 package com.scarry.ammusicplayer.data.repository
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import com.scarry.ammusicplayer.Domain.AM_Music_HttpErrorType
 import com.scarry.ammusicplayer.Domain.MusicSummary
 import com.scarry.ammusicplayer.Domain.SearchResults
@@ -14,6 +17,8 @@ import com.scarry.ammusicplayer.data.dto.toPlaylistSummary
 import com.scarry.ammusicplayer.data.dto.toSearchResults
 import com.scarry.ammusicplayer.data.dto.toTrackSearchResult
 import com.scarry.ammusicplayer.data.dto.toTrackSummary
+import com.scarry.ammusicplayer.data.paging.SpotifyAlbumSearchPagingSource
+import com.scarry.ammusicplayer.data.paging.SpotifyPagingSource
 import com.scarry.ammusicplayer.data.remote.musicservice.SpotifyService
 import com.scarry.ammusicplayer.data.remote.musicservice.SupportedSpotifyGenres
 import com.scarry.ammusicplayer.data.remote.musicservice.toGenre
@@ -21,6 +26,7 @@ import com.scarry.ammusicplayer.data.remote.token.BearerToken
 import com.scarry.ammusicplayer.data.repository.tokenrepository.TokenRepository
 import com.scarry.ammusicplayer.data.utils.FetchedResource
 import com.scarry.ammusicplayer.data.utils.MapperImageSize
+import kotlinx.coroutines.flow.Flow
 import retrofit2.HttpException
 import javax.inject.Inject
 
@@ -108,6 +114,45 @@ class AM_MusicRepository @Inject constructor (
         ).value.map { trackDTOWithAlbumMetadata ->
             trackDTOWithAlbumMetadata.toTrackSearchResult(imageSize)
         }
+    }
+
+    override fun getPaginatedSearchStreamForType(
+        paginatedStreamType: Repository.PaginatedStreamType,
+        searchQuery: String,
+        countryCode: String,
+        imageSize: MapperImageSize
+    ): Flow<PagingData<out SearchResult>> {
+        val pagingSource = when(paginatedStreamType) {
+            Repository.PaginatedStreamType.ALBUM -> SpotifyAlbumSearchPagingSource(
+                searchQuery = searchQuery,
+                countryCode = countryCode,
+                imageSize = imageSize,
+                tokenRepository = tokenRepository,
+                spotifyService = spotifyService
+            )
+            Repository.PaginatedStreamType.ARTIST -> SpotifyAlbumSearchPagingSource(
+                searchQuery = searchQuery,
+                countryCode = countryCode,
+                imageSize = imageSize,
+                tokenRepository = tokenRepository,
+                spotifyService = spotifyService
+            )
+            Repository.PaginatedStreamType.TRACK -> SpotifyAlbumSearchPagingSource(
+                searchQuery = searchQuery,
+                countryCode = countryCode,
+                imageSize = imageSize,
+                tokenRepository = tokenRepository,
+                spotifyService = spotifyService
+            )
+            Repository.PaginatedStreamType.PLAYLIST -> SpotifyAlbumSearchPagingSource(
+                searchQuery = searchQuery,
+                countryCode = countryCode,
+                imageSize = imageSize,
+                tokenRepository = tokenRepository,
+                spotifyService = spotifyService
+            )
+        }
+        return Pager(PagingConfig(SpotifyPagingSource.DEFAULT_PAGE_SIZE)) {pagingSource} .flow
     }
 
 }

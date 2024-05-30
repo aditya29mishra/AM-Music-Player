@@ -1,5 +1,6 @@
 package com.scarry.ammusicplayer.data.repository
 
+import androidx.paging.PagingData
 import com.scarry.ammusicplayer.Domain.AM_Music_HttpErrorType
 import com.scarry.ammusicplayer.Domain.Genre
 import com.scarry.ammusicplayer.Domain.MusicSummary
@@ -7,8 +8,10 @@ import com.scarry.ammusicplayer.Domain.SearchResult
 import com.scarry.ammusicplayer.Domain.SearchResults
 import com.scarry.ammusicplayer.data.utils.FetchedResource
 import com.scarry.ammusicplayer.data.utils.MapperImageSize
+import kotlinx.coroutines.flow.Flow
 
 interface Repository {
+    enum class PaginatedStreamType {ALBUM ,ARTIST, TRACK,PLAYLIST}
     suspend fun fetchArtisSummaryForId(
         artistId: String,
         imageSize: MapperImageSize
@@ -51,4 +54,11 @@ interface Repository {
         imageSize: MapperImageSize,
         countryCode: String,
     ): FetchedResource<List<SearchResult.TrackSearchResult>,AM_Music_HttpErrorType>
+
+    fun getPaginatedSearchStreamForType(
+        paginatedStreamType: PaginatedStreamType,
+        searchQuery: String,
+        countryCode: String,
+        imageSize: MapperImageSize
+    ): Flow<PagingData<out SearchResult>>
 }
