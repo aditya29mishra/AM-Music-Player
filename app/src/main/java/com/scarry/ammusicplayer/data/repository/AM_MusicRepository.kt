@@ -59,13 +59,13 @@ class AM_MusicRepository @Inject constructor (
         artistId: String,
         imageSize: MapperImageSize,
         countryCode: String
-    ): FetchedResource<List<SearchResult.TrackSearchResult>, AM_Music_HttpErrorType> = withToken{
+    ): FetchedResource<List<MusicSummary.TrackSummary>, AM_Music_HttpErrorType> = withToken{
         spotifyService.getTopTenTracksForArtistWithId(
             artistId = artistId,
             market = countryCode,
             token = it,
         ).value.map { trackDTOWithAlbumMetadata ->
-            trackDTOWithAlbumMetadata.toTrackSearchResult(imageSize)
+            trackDTOWithAlbumMetadata.toTrackSummary(imageSize)
         }
     }
 
