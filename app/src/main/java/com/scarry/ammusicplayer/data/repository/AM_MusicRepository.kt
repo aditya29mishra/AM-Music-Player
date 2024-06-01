@@ -152,7 +152,7 @@ class AM_MusicRepository @Inject constructor (
                 spotifyService = spotifyService
             )
         }
-        return Pager(PagingConfig(SpotifyPagingSource.DEFAULT_PAGE_SIZE)) {pagingSource} .flow
+    //    return Pager(PagingConfig(SpotifyPagingSource.DEFAULT_PAGE_SIZE)) {pagingSource} .flow
     }
 
 }
