@@ -72,8 +72,8 @@ dependencies {
     debugImplementation libs.androidx.ui.tooling
     debugImplementation libs.androidx.ui.test.manifest
 
-    testImplementation "org.robolectric:robolectric:4.8.1"
-    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.1"
+    testImplementation libs.robolectric
+    testImplementation libs.kotlinx.coroutines.test
 
 
     //accompanist
@@ -85,13 +85,13 @@ dependencies {
     implementation libs.accompanist.placeholder.material
 
     //retrofit
-    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
-    implementation 'com.squareup.retrofit2:converter-jackson:2.9.0'
-    implementation 'com.fasterxml.jackson.module:jackson-module-kotlin:2.13.2' // Jackson support for kotlin types
+    implementation libs.retrofit
+    implementation libs.converter.gson
+    implementation libs.converter.jackson
+    implementation libs.jackson.module.kotlin // Jackson support for kotlin types
 
     // Jackson support for kotlin types
-    implementation 'com.fasterxml.jackson.module:jackson-module-kotlin:2.13.2'
+    implementation libs.jackson.module.kotlin
 
     // hilt
     implementation libs.hilt.android
@@ -99,15 +99,15 @@ dependencies {
     coreLibraryDesugaring libs.desugar.jdk.libs
 
     // lottie compose
-    implementation "com.airbnb.android:lottie-compose:5.2.0"
+    implementation libs.lottie.compose
 
 //exoplayer
-    implementation 'com.google.android.exoplayer:exoplayer-core:2.18.1'
+    implementation libs.exoplayer.core
     // for PlayerNotificationManager
-    implementation 'com.google.android.exoplayer:exoplayer-ui:2.18.1'
+    implementation libs.exoplayer.ui
 
 
-    implementation "androidx.paging:paging-runtime:3.1.1"
-    implementation "androidx.paging:paging-compose:1.0.0-alpha15"
+    implementation libs.androidx.paging.runtime
+    implementation libs.androidx.paging.compose
 
 }
