@@ -32,8 +32,6 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.layout.getDefaultLazyLayoutKey
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -68,7 +66,7 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import coil.compose.rememberImagePainter
+import androidx.paging.compose.LazyPagingItems
 import com.airbnb.lottie.LottieComposition
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
@@ -77,7 +75,6 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 import com.google.accompanist.insets.navigationBarsHeight
 import com.scarry.ammusicplayer.Domain.Genre
 import com.scarry.ammusicplayer.Domain.SearchResult
-import com.scarry.ammusicplayer.Domain.SearchResults
 import com.scarry.ammusicplayer.R
 import com.scarry.ammusicplayer.ui.Components.AM_MusicPlayerCompactListItemCard
 import com.scarry.ammusicplayer.ui.Components.FilterChip
@@ -97,7 +94,10 @@ fun SearchScreen(
     onGenreItemClick: (Genre) -> Unit,
     onSearchTextChanged: (searchText: String, filter: SearchFilter) -> Unit,
     isSearchResultLoading: Boolean,
-    searchQueryResult: SearchResults,
+    albumListForSearchQuery: LazyPagingItems<SearchResult.AlbumSearchResult>,
+    artistListForSearchQuery: LazyPagingItems<SearchResult.ArtistSearchResult>,
+    tracksListForSearchQuery: LazyPagingItems<SearchResult.TrackSearchResult>,
+    playlistListForSearchQuery: LazyPagingItems<SearchResult.PlaylistSearchResult>,
     onSearchQueryItemClicked: (SearchResult) -> Unit,
 ) {
     var searchText by remember { mutableStateOf("") }
@@ -238,7 +238,10 @@ fun SearchScreen(
                 exit = fadeOut()
             ) {
                 SearchQueryList(
-                    searchResults = searchQueryResult,
+                    albumListForSearchQuery = albumListForSearchQuery,
+                    artistListForSearchQuery = artistListForSearchQuery,
+                    tracksListForSearchQuery = tracksListForSearchQuery,
+                    playlistListForSearchQuery = playlistListForSearchQuery,
                     onItemClick = { onSearchQueryItemClicked(it) },
                     onTrailingIconButtonClick = { },
                     isLoadingPlaceHolderVisible = { item ->
@@ -259,7 +262,10 @@ fun SearchScreen(
 @ExperimentalMaterialApi
 @Composable
 private fun SearchQueryList(
-    searchResults: SearchResults,
+    albumListForSearchQuery: LazyPagingItems<SearchResult.AlbumSearchResult>,
+    artistListForSearchQuery: LazyPagingItems<SearchResult.ArtistSearchResult>,
+    tracksListForSearchQuery: LazyPagingItems<SearchResult.TrackSearchResult>,
+    playlistListForSearchQuery: LazyPagingItems<SearchResult.PlaylistSearchResult>,
     onItemClick: (SearchResult) -> Unit,
     onTrailingIconButtonClick: (SearchResult) -> Unit,
     isLoadingPlaceHolderVisible: (SearchResult) -> Boolean,
@@ -279,8 +285,8 @@ private fun SearchQueryList(
             verticalArrangement = Arrangement.spacedBy(16.dp),
             state = lazyListState
         ) {
-            items(searchResults.tracks, key = { it.id }) {
-                AM_MusicPlayerCompactListItemCard(
+            items(tracksListForSearchQuery, key = { it.id }) {
+                it?.let {AM_MusicPlayerCompactListItemCard(
                     cardType = it.getAssociatedListCardType(),
                     thumbnailImageUrlString = it.imageUrlString,
                     title = it.name,
@@ -293,53 +299,61 @@ private fun SearchQueryList(
                     },
                     onThumbnailLoading = { onImageLoading(it) }
                 )
+                    }
             }
-            items(searchResults.albums, key = { it.id }) {
-                AM_MusicPlayerCompactListItemCard(
-                    cardType = it.getAssociatedListCardType(),
-                    thumbnailImageUrlString = it.albumArtUrlString,
-                    title = it.name,
-                    subtitle = it.artistsString,
-                    onClick = { onItemClick(it) },
-                    onTrailingButtonIconClick = { onTrailingIconButtonClick(it) },
-                    isLoadingPlaceHolderVisible = isLoadingPlaceHolderVisible(it),
-                    onThumbnailImageLoadingFinished = { throwable ->
-                        onImageLoadingFinished(it, throwable)
-                    },
-                    onThumbnailLoading = { onImageLoading(it) }
-                )
+            items(albumListForSearchQuery, key = { it.id }) {
+
+                it?.let {
+                    AM_MusicPlayerCompactListItemCard(
+                        cardType = it.getAssociatedListCardType(),
+                        thumbnailImageUrlString = it.albumArtUrlString,
+                        title = it.name,
+                        subtitle = it.artistsString,
+                        onClick = { onItemClick(it) },
+                        onTrailingButtonIconClick = { onTrailingIconButtonClick(it) },
+                        isLoadingPlaceHolderVisible = isLoadingPlaceHolderVisible(it),
+                        onThumbnailImageLoadingFinished = { throwable ->
+                            onImageLoadingFinished(it, throwable)
+                        },
+                        onThumbnailLoading = { onImageLoading(it) }
+                    )
+                }
             }
-            items(searchResults.artists, key = { it.id }) {
-                AM_MusicPlayerCompactListItemCard(
-                    cardType = it.getAssociatedListCardType(),
-                    thumbnailImageUrlString = it.imageUrlString ?: "",
-                    title = it.name,
-                    subtitle = "Artist",
-                    onClick = { onItemClick(it) },
-                    onTrailingButtonIconClick = { onTrailingIconButtonClick(it) },
-                    isLoadingPlaceHolderVisible = isLoadingPlaceHolderVisible(it),
-                    onThumbnailImageLoadingFinished = { throwable ->
-                        onImageLoadingFinished(it, throwable)
-                    },
-                    onThumbnailLoading = { onImageLoading(it) },
-                    errorPainter = artistImageErrorPainter
-                )
+            items(artistListForSearchQuery, key = { it.id }) {
+                it?.let {
+                    AM_MusicPlayerCompactListItemCard(
+                        cardType = it.getAssociatedListCardType(),
+                        thumbnailImageUrlString = it.imageUrlString ?: "",
+                        title = it.name,
+                        subtitle = "Artist",
+                        onClick = { onItemClick(it) },
+                        onTrailingButtonIconClick = { onTrailingIconButtonClick(it) },
+                        isLoadingPlaceHolderVisible = isLoadingPlaceHolderVisible(it),
+                        onThumbnailImageLoadingFinished = { throwable ->
+                            onImageLoadingFinished(it, throwable)
+                        },
+                        onThumbnailLoading = { onImageLoading(it) },
+                        errorPainter = artistImageErrorPainter
+                    )
+                }
             }
-            items(searchResults.playlists, key = { it.id }) {
-                AM_MusicPlayerCompactListItemCard(
-                    cardType = it.getAssociatedListCardType(),
-                    thumbnailImageUrlString = it.imageUrlString ?: "",
-                    title = it.name,
-                    subtitle = "Playlist",
-                    onClick = { onItemClick(it) },
-                    onTrailingButtonIconClick = { onTrailingIconButtonClick(it) },
-                    isLoadingPlaceHolderVisible = isLoadingPlaceHolderVisible(it),
-                    onThumbnailImageLoadingFinished = { throwable ->
-                        onImageLoadingFinished(it, throwable)
-                    },
-                    onThumbnailLoading = { onImageLoading(it) },
-                    errorPainter = playlistsImageErrorPainter
-                )
+            items(playlistListForSearchQuery, key = { it.id }) {
+                it?.let {
+                    AM_MusicPlayerCompactListItemCard(
+                        cardType = it.getAssociatedListCardType(),
+                        thumbnailImageUrlString = it.imageUrlString ?: "",
+                        title = it.name,
+                        subtitle = "Playlist",
+                        onClick = { onItemClick(it) },
+                        onTrailingButtonIconClick = { onTrailingIconButtonClick(it) },
+                        isLoadingPlaceHolderVisible = isLoadingPlaceHolderVisible(it),
+                        onThumbnailImageLoadingFinished = { throwable ->
+                            onImageLoadingFinished(it, throwable)
+                        },
+                        onThumbnailLoading = { onImageLoading(it) },
+                        errorPainter = playlistsImageErrorPainter
+                    )
+                }
             }
             item {
                 Spacer(modifier = Modifier.navigationBarsHeight())
