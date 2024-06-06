@@ -3,33 +3,25 @@ package com.scarry.ammusicplayer.viewModels.searchViewModel
 import android.app.Application
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import coil.ImageLoader
-import coil.request.ImageRequest
-import coil.request.ImageResult
-import coil.request.SuccessResult
+import androidx.paging.PagingData
 import com.scarry.ammusicplayer.Domain.SearchResult
 import com.scarry.ammusicplayer.Domain.SearchResults
 import com.scarry.ammusicplayer.Domain.emptySearchResults
-import com.scarry.ammusicplayer.Domain.toMusicPlayerTrack
 import com.scarry.ammusicplayer.data.repository.Repository
 import com.scarry.ammusicplayer.data.utils.FetchedResource
 import com.scarry.ammusicplayer.data.utils.MapperImageSize
 import com.scarry.ammusicplayer.di.AM_MusicApplication
-import com.scarry.ammusicplayer.di.IoDispatcher
 import com.scarry.ammusicplayer.musicPlayer.MusicPlayer
 import com.scarry.ammusicplayer.useCase.playTrackUseCase.AmMusicPlayTrackWithMediaNotificationUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import kotlin.reflect.jvm.internal.impl.descriptors.Visibilities.Private
 
 enum class SearchScreenUiState { LOADING, SUCCESS, IDLE }
 
@@ -46,9 +38,23 @@ class SearchViewModel @Inject constructor(
     private val _searchResults = mutableStateOf(emptySearchResults)
     private val filteredSearchResult = mutableStateOf(emptySearchResults)
     val searchResults = _searchResults as State<SearchResults>
+    @Deprecated("Use separate paginated item flows")
+    val searchResult = filteredSearchResult as State<SearchResults>
     val uiState = _uiState as State<SearchScreenUiState>
 
-    private fun gerCountryCode(): String =
+    private val _albumListForSearchQuery = MutableStateFlow<PagingData<SearchResult.AlbumSearchResult>>(PagingData.empty())
+    val albumListForSearchQuery = _albumListForSearchQuery as Flow<PagingData<SearchResult.AlbumSearchResult>>
+
+    private val _artistListForSearchQuery = MutableStateFlow<PagingData<SearchResult.ArtistSearchResult>>(PagingData.empty())
+    val artistListForSearchQuery = _artistListForSearchQuery as Flow<PagingData<SearchResult.ArtistSearchResult>>
+
+    private val _trackListForSearchQuery = MutableStateFlow<PagingData<SearchResult.TrackSearchResult>>(PagingData.empty())
+    val trackListForSearchQuery = _trackListForSearchQuery as Flow<PagingData<SearchResult.TrackSearchResult>>
+
+    private val _playlistListForSearchQuery = MutableStateFlow<PagingData<SearchResult.PlaylistSearchResult>>(PagingData.empty())
+    val playlistListForSearchQuery = _playlistListForSearchQuery as Flow<PagingData<SearchResult.PlaylistSearchResult>>
+
+    private fun getCountryCode(): String =
         getApplication<AM_MusicApplication>().resources.configuration.locale.country
 
     private fun getSearchResultObjectForFilter(
@@ -65,6 +71,46 @@ class SearchViewModel @Inject constructor(
             else emptyList()
         )
     } else _searchResults.value
+
+    private  suspend fun collectAndAssignSearchResults(
+        searchQuery: String,
+        imageSize: MapperImageSize
+    ){
+      repository.getPaginatedSearchStreamForType(
+          paginatedStreamType = Repository.PaginatedStreamType.ALBUM,
+          searchQuery = searchQuery,
+          countryCode = getCountryCode(),
+          imageSize = imageSize
+      ).collect{
+          _albumListForSearchQuery.value = it as PagingData<SearchResult.AlbumSearchResult>
+      }
+        repository.getPaginatedSearchStreamForType(
+            paginatedStreamType = Repository.PaginatedStreamType.ALBUM,
+            searchQuery = searchQuery,
+            countryCode = getCountryCode(),
+            imageSize = imageSize
+        ).collect{
+            _artistListForSearchQuery.value = it as PagingData<SearchResult.ArtistSearchResult>
+        }
+
+        repository.getPaginatedSearchStreamForType(
+            paginatedStreamType = Repository.PaginatedStreamType.ALBUM,
+            searchQuery = searchQuery,
+            countryCode = getCountryCode(),
+            imageSize = imageSize
+        ).collect{
+            _trackListForSearchQuery.value = it as PagingData<SearchResult.TrackSearchResult>
+        }
+        repository.getPaginatedSearchStreamForType(
+            paginatedStreamType = Repository.PaginatedStreamType.ALBUM,
+            searchQuery = searchQuery,
+            countryCode = getCountryCode(),
+            imageSize = imageSize
+        ).collect{
+            _playlistListForSearchQuery.value = it as PagingData<SearchResult.PlaylistSearchResult>
+        }
+    }
+
 
     fun searchWithFilter(
         searchQuery: String,
@@ -89,8 +135,9 @@ class SearchViewModel @Inject constructor(
             val searchResult = repository.fetchSearchResultForQuery(
                 searchQuery = searchQuery.trim(),
                 imageSize = MapperImageSize.MEDIUM,
-                countryCode = gerCountryCode()
+                countryCode = getCountryCode()
             )
+            collectAndAssignSearchResults(searchQuery, MapperImageSize.MEDIUM)
             if (searchResult is FetchedResource.Success) {
                 _searchResults.value = searchResult.data
                 filteredSearchResult.value = getSearchResultObjectForFilter(searchFilter)

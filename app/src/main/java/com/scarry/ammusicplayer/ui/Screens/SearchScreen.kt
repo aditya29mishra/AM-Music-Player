@@ -32,6 +32,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -66,7 +67,7 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.*
 import com.airbnb.lottie.LottieComposition
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
@@ -285,7 +286,7 @@ private fun SearchQueryList(
             verticalArrangement = Arrangement.spacedBy(16.dp),
             state = lazyListState
         ) {
-            items(tracksListForSearchQuery, key = { it.id }) {
+            items(tracksListForSearchQuery, key = {it.id}) {
                 it?.let {AM_MusicPlayerCompactListItemCard(
                     cardType = it.getAssociatedListCardType(),
                     thumbnailImageUrlString = it.imageUrlString,
